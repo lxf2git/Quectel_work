@@ -1,0 +1,95 @@
+#include"search.h"
+
+int  search_age(pStu pHead)
+{
+	pStu ptmp = pHead;
+	int Age;
+	printf("请输入要查找的年龄:");
+	scanf("%d",&Age);
+	printf("按年龄查找的结果:\n");
+	while(ptmp != NULL)
+	{
+		if(ptmp->age == Age)
+		{
+			return 1;		
+		}
+		else
+			return -1;			
+		ptmp = ptmp->next;		
+	}
+}
+int  search_num(pStu pHead)
+{
+	pStu ptmp = pHead;
+	int Num;
+	printf("请输入要查找的年龄:");
+	scanf("%d",&Num);
+	printf("按num查找的结果:\n");
+	while(ptmp != NULL)
+	{
+		if(ptmp->num == Num)
+		{
+			return 1;	
+		}
+		else
+			return -1;
+		ptmp = ptmp->next;	
+	}
+}
+
+int (pFun_search[2])(pStu pHead,int num)
+{
+	int choose;
+	num = 2;
+	int age;
+	pStu ptmp = pHead;
+	printf("请选择:\n");
+	printf("1--------按age查找:\n");
+	printf("2--------按num查找:\n");
+	while(ptmp != NULL)
+	{
+		for(;;)
+		{
+			scanf("%d",&choose);	
+			if(choose !=1 && choose !=2)
+			{
+				continue;
+			}
+			
+			if(choose == 1)
+			{
+				age = search_age(pHead);
+				printf("age：%d",age);
+				if(age == 1)
+					printf("age:%d  num:%d\n",&ptmp->age,&ptmp->num);		
+				else
+					printf("没有符合的年龄!\n");
+			}
+			
+			if(choose == 2)
+			{
+				num = search_num(pHead);
+				printf("num：%d",num);
+				if(num == 1)
+					printf("age:%d  num:%d\n",&ptmp->age,&ptmp->num);		
+				else
+					printf("没有符合的num!\n");
+			}
+		}
+	}
+}
+
+int pSearch(pStu pHead, int (*pFun_Search[2])(pStu pHead, int num))
+{	
+	int num = 2;
+	(*pFun_search[2])(pStu pHead, int num);
+}
+
+
+void find(pStu pHead)
+{
+	int num = 2;
+	int (*pFun_Search[2])(pStu pHead, int num);
+	pFun_Search = pFun_search;
+	pSearch(pHead, pFun_search);
+}

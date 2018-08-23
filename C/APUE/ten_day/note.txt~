@@ -1,0 +1,74 @@
+专用进程间通信方式：共享内存/消息队列/信号量
+ #include <sys/ipc.h> 公共头文件
+ 
+#include <sys/shm.h>
+
+int shmget(key_t key, size_t size, int shmflg);
+创建或取得一个共享内存对象 （得到一个共享内存标识符或创建一个共享内存对象并返回共享内存标识符）
+
+key：0 建立
+大于0  视shmflag来确定操作 key可以通过ftok返回
+
+size：新建的共享内存大小 以字节为单位   
+0 只获取共享内存时指定为0
+shmflag：
+
+
+void *shmat(int shmid, const void *shmaddr, int shmflg);
+将共享内存对象挂接到本进程内存中 返回挂接后的地址
+shmid：共享内存标识符
+shmaddr：NULL 让内核选一个合适地址位置
+shmflg：SHM_RDONLY 为只读模式 其他为读写模式
+返回：映射成功的地址
+
+int shmdt(const void *shmaddr);
+解除挂接
+
+int shmctl(int shmid, int cmd, struct shmid_ds *buf);
+删除一个共享内存对象
+
+练习：shm版本cp
+
+*********************************************************
+匿名管道
+int pipe(int pipefd[2]);
+创建管道 两端各用一个文件描述符表示
+读端的文件描述符保存在pipefd[0]中 写端的文件描述符保存在pipefd[1]中
+
+发送进程关闭读端 保留写端 接收进程关闭写端 保留读端
+
+注意：
+读管道时 
+	如果管道中没有数据 则阻塞
+	如果没有写端  read返回0
+写管道时  如果没有读端 write返回-1 并产生一个SIGPIPE信号
+
+练习：父进程从键盘读入字符串写入管道 子进程读数据
+如果字符串中的字符为大写 则转换为小写 并将字符串输出到屏幕
+
+
+命名管道
+ int mkfifo(const char *pathname, mode_t mode);
+按指定的权限创建管道文件
+
+ int unlink(const char *pathname);
+
+作业：实现 ls | grep "2"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

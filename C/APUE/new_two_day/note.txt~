@@ -1,0 +1,152 @@
+ssize_t write(int fd, const void *buf, size_t count)
+功能：从文件中读取数据
+参数：
+fd：文件描述符
+buf：缓冲区
+count：缓冲区大小
+返回值：
+
+ssize_t read(int fd, void *buf, size_t count)
+功能：往文件里写入数据
+fd:文件描述符
+buf：存放数据缓冲区
+count：缓冲区大小，想从文件读取的字节数
+返回值：成功=读取字节数 0=文件末尾 失败=-1
+
+int dup2(int oldfd, int newfd)
+文件描述符的复制，实现了oldfd和newfd同时指向oldfd所指向的文件。
+返回值：成功=newfd 失败=-1
+
+int stat(const char *path, struct stat *buf);
+int fstat(int fd, struct stat *buf);
+int lstat(const char *path, struct stat *buf);
+功能：根据文件路径/文件描述符获取文件属性
+struct stat {
+		dev_t     st_dev; //设备号
+		ino_t     st_ino; //inode    
+		mode_t    st_mode;//权限    
+		nlink_t   st_nlink;//硬链接数  
+		uid_t     st_uid;//用户id
+		gid_t     st_gid;//用户组id
+		dev_t     st_rdev;//设备号
+		off_t     st_size;//大小  long int
+		blksize_t st_blksize;
+		blkcnt_t  st_blocks;
+		time_t    st_atime;
+		time_t    st_mtime;//最后一次修改的时间
+		time_t    st_ctime;//chmod
+};
+
+struct passwd *getpwnam(const char *name);
+struct passwd *getpwuid(uid_t uid);
+struct passwd {
+               char   *pw_name;       /* username */
+               char   *pw_passwd;     /* user password */
+               uid_t   pw_uid;        /* user ID */
+               gid_t   pw_gid;        /* group ID */
+               char   *pw_gecos;      /* real name */
+               char   *pw_dir;        /* home directory */
+               char   *pw_shell;      /* shell program */
+           };
+
+
+struct group *getgrnam(const char *name);
+
+struct group *getgrgid(gid_t gid);
+struct group {
+               char   *gr_name;       /* group name */
+               char   *gr_passwd;     /* group password */
+               gid_t   gr_gid;        /* group ID */
+               char  **gr_mem;        /* group members */
+           };
+
+ time_t time(time_t *t);
+作用：获取以“second”为单位 以1970.1.1 0点开始计时的当前时间值作为time的返回值
+并把它存在t所指区域中（不需要存储可以设置t为NULL）
+
+struct tm *gmtime(const time_t *timep);
+功能：将日历时间转为世界标准时间
+ struct tm *localtime(const time_t *timep);
+功能：将日历时间转为本地时间
+ char *asctime(const struct tm *tm);
+功能：将时间转换成字符串时间
+char *ctime(const time_t *timep);
+
+struct tm {
+               int tm_sec;         /* seconds */
+               int tm_min;         /* minutes */
+               int tm_hour;        /* hours */
+               int tm_mday;        /* day of the month */
+               int tm_mon;         /* month */
+               int tm_year;        /* year */
+               int tm_wday;        /* day of the week */
+               int tm_yday;        /* day in the year */
+               int tm_isdst;       /* daylight saving time */
+           };
+
+练习：从命令行提供的一个文件或目录路径 显示这个文件或目录的最后修改时间 
+练习：显示某个目录下文件中 最大的文件（不包括目录-）
+
+
+目录：
+
+DIR *opendir(const char *name);
+打开目录
+返回:成功=目录句柄
+
+struct dirent *readdir(DIR *dirp);
+ struct dirent {
+               ino_t          d_ino;       /* inode number */
+               off_t          d_off;       /* offset to the next dirent */
+               unsigned short d_reclen;    /* length of this record */
+               unsigned char  d_type;      /* type of file; not supported
+                                              by all file system types */
+               char           d_name[256]; /* filename */
+           };
+
+
+
+
+int closedir(DIR *dirp);
+
+void rewinddir(DIR *dirp);
+
+int mkdir(const char *pathname, mode_t mode)
+创建目录
+
+int rmdir(const char *pathname);
+删除目录
+注意： which must be empty
+
+int chdir(const char *path)
+切换调用进程的工作目录
+char *getcwd(char *buf, size_t size);
+获取当前工作路径
+ void seekdir(DIR *dirp, long offset);
+ long telldir(DIR *dirp);
+
+作业：目录扫描器
+a.out /home
+
+
+ls
+-ail  /home/file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

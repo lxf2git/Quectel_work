@@ -1,0 +1,33 @@
+组播：
+224.0.0.0-230.255.255.255
+
+setsockopt(sockfd,IPPROTO_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(struct ip_mreq));
+
+struct ip_mreq
+  {
+    /* IP multicast address of group.  */组播 组ip
+    struct in_addr imr_multiaddr;
+
+    /* Local IP address of interface.  */本地某一网络设备接口的ip地址
+    struct in_addr imr_interface;
+  };  
+
+实现：两台机器聊天 进程实现
+
+ftp：进程版
+login
+ls cd put get mkdir pwd quit
+
+
+
+
+
+
+
+
+
+
+
+
+
+

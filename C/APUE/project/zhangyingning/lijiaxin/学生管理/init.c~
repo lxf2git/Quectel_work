@@ -1,0 +1,8 @@
+#include"init.h"
+
+void init(pList *ppp)
+{
+		get_memory((void **)&ppp,sizeof(sList));
+		get_memory((void **)&(ppp->head),sizeof(sStu));
+		return 0;
+}

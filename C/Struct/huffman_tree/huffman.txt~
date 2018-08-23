@@ -1,0 +1,14 @@
+aabbbbcccccccdddddddd
+1、权值：
+a:2 b:4 c:7 d:8
+
+2、建huffman树
+
+3、huffman编码
+  左1 右0
+ a:110
+ b:010
+ c:00
+ d：1
+
+

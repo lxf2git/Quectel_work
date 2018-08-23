@@ -1,0 +1,114 @@
+#include"apply.h"
+#include"insert.h"
+
+int apply_mem(pMem phead_app,pMem phead_free,pRec phead_rec)
+{
+	int size;
+	printf("please input a size of apply_memory\n");
+	printf("all_size:%d ",phead_app->mem_size);
+	scanf("%d",&size);
+	if(size>phead_app->mem_size)
+	{
+		printf("空间不够\n");
+		return FULL;
+	}
+	else
+	{
+		creat_apply_mem(phead_app,phead_free,phead_rec,size);
+		return SUC;
+	}
+}
+
+int creat_apply_mem(pMem phead_app,pMem phead_free,pRec rec_phead,int size)
+{
+	int t=0;
+	pMem p=NULL,p1=NULL;
+	pMem max=find_max_app(phead_app);
+	pRec newrec=NULL;
+	pMem equal=NULL;
+	pMem pnew=NULL;
+	int i=0;
+	init_rec(&newrec,sizeof(sRec));
+	creat_memory((void **)&(newrec->p),
+					(size/max->mem_size+1)*sizeof(sMem));
+	while(size>0)
+	{
+		equal=find_equal(phead_app,size);
+		if(equal!=NULL)
+		{
+			exchange(phead_free, equal, find_size_insert);
+			phead_app->mem_size-=size;
+			newrec->p[i]=equal;
+			insert_rec(rec_phead, newrec);
+			size=0;
+			break;
+		}
+		if(size<max->mem_size)
+		{
+			init_memory(&pnew,sizeof(sMem));
+			pnew->index = max->index;
+			pnew->mem_size = size;
+			max->mem_size -= size;
+			insert_mem_chain(free_phead, find_size_insert, pnew);
+			phead_app->mem_size -= size;
+			newrec->p[i] = pnew;
+			insert_rec_chain(rec_phead, newrec);
+			size = 0;
+			break;
+		}
+		else
+		{
+			exchange(free_phead, max, find_size_insert);
+			mem -= max->mem_size;
+			phead_app->mem_size -= max->mem_size;
+			newrec->pdata[i] = max;
+			insert_rec_chain(rec_phead, newrec);
+			max = find_max_app(phead_app);
+		}
+		i++;
+	}		 
+}
+
+}
+
+pMem delete_(pMem p)
+{
+	pMem ptmp=p->prev;
+	ptmp->next=p->next;
+	p->next->prev=ptmp;
+	p->prev=p;
+	p->next=p;
+	return p;
+}
+
+pMem find_max_app(pMem phead)
+{
+	pMem p=NULL;
+	pMem pmax=phead->next;
+	int max=phead->next->mem_size;
+	for(p=phead->next;p!=phead;p=p->next)
+	{
+		if(max<p->mem_size)
+		{
+			max=p->mem_size;
+			pmax=p;
+		}
+	}
+	return pmax;
+}
+
+pMem find_equal(pMem phead, int mem)
+{
+		pMem equal = NULL;
+		pMem p = phead->next;
+		while(p!=phead)
+		{
+				if(p->mem_size==mem)
+				{
+						equal=p;
+				}
+				p=p->next;
+		}
+		return equal;
+}
+

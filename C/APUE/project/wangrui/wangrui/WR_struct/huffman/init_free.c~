@@ -1,0 +1,29 @@
+#include"huffman.h"
+
+void init_node(pNode *pnode)
+{
+	creat_memory((void **)pnode,sizeof(sNode));
+	(*pnode)->weight = 0;
+	(*pnode)->data = 0;
+	(*pnode)->lc = NULL;
+	(*pnode)->rc = NULL;
+	(*pnode)->parent = NULL;
+}
+void creat_memory(void **p,int size)
+{
+	*p = malloc(size);
+	if(*p == NULL)
+	{
+		printf("malloc error\n");
+		exit(-1);
+	}
+	bzero(*p,size);
+}
+
+void insert_back_chain(pNode pHead,pNode pnew)
+{
+		pnew->lc = pHead->lc;
+		pHead->lc->rc = pnew;
+		pHead->lc = pnew;
+		pnew->rc = pHead;
+}

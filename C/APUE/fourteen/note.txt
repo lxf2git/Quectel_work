@@ -1,0 +1,67 @@
+UDP
+接收端                                                     
+nt socket(int domain, int type, int protocol);
+
+int bind(int sockfd, const struct sockaddr *addr,socklen_t addrlen);
+绑定本机信息到文件描述符
+sockfd:socket返回值 套接字
+addr:my_addr
+
+
+ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags,
+                        struct sockaddr *src_addr, socklen_t *addrlen);
+
+accept+read
+以阻塞的方式接收数据
+sockfd:套接字
+buf:存放接收的内容
+len:缓冲区的大小 最多可以接收多少个字符
+flags：0 默认 MSG_DONTWAIT
+src_addr:将发送方的地址带回来 
+addrlen:发送方地址长度
+
+返回值：返回实际读到的字节数 失败-1
+	
+
+
+发送端：
+nt socket(int domain, int type, int protocol);
+
+
+ssize_t sendto(int sockfd, const void *buf, size_t len, int flags,
+                      const struct sockaddr *dest_addr, socklen_t addrlen);
+connect+write
+
+发送数据
+sockfd：套接字
+buf：发送的内容
+len：发送内容长度
+flags：0
+dest_addr：往哪个地方发（地址+端口号）
+
+练习：发送端从键盘获取字符串  发给服务器 接收端接收到后 转为大写 发回去 发送端再将结果输出到屏幕上
+
+广播：
+
+int setsockopt(int sockfd, int level, int optname,
+                      const void *optval, socklen_t optlen);
+
+ SOL_SOCKET
+
+SO_BROADCAST
+SO_REUSEADDR
+
+作业：
+编程实现：
+s ip port text 发信息
+r  接收信息（MSG_DONTWAIT）
+a text 回复信息
+q 退出
+
+
+
+
+
+
+
+

@@ -1,0 +1,29 @@
+作业：基数排序
+  
+
+  0     1   2     3    4          5   6   7          8       9
+ 800     111    893  234         045                 108    219 
+ 120 
+ 080
+
+ typedef struct node
+{
+	int data;
+	struct node *prev;
+	struct node *next;
+}sNode,*pNode;
+
+typedef struct dis_chain
+{
+	pNode record;
+
+	struct dis_chain*next;
+}sDisChain,*pDisChain;
+
+
+num = judge_num();
+for(i<num)
+{
+	distribute();
+	collected();	
+}

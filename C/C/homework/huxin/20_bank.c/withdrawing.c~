@@ -1,0 +1,20 @@
+#include"main.h"
+void withdrawing()
+{
+	int n=0,m=1;
+	printf("please input you withdrawing money");
+	scanf("%d",&n);
+	printf("please again affirm money\n");
+	scanf("%d",&m);
+	while(1)
+	{
+    if(n!=m)
+	{
+	  printf("withdrawing is error\n");
+	  break;
+	}
+	else 
+	  printf("withdrawing succeed\n");
+	  break;
+	}
+}

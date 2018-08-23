@@ -1,0 +1,5 @@
+
+# ./exe noload    不载入文件
+
+# ./exe load file_name    载入名为file_name的文件
+

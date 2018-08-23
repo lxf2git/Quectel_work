@@ -1,0 +1,1748 @@
+
+/*****oneday****/
+
+文件操作+进程
+进程间通信 
+线程
+socket
+fopen
+fread
+fwrite
+fclose
+fgets
+fputs
+fgetc
+fputc
+fseek
+ftell
+rewind
+feof
+
+cat file
+./exe root/1.c
+
+#define _FILE_OFFSET_BITS 64
+int fseeko(FILE *stream, off_t offset, int whence);
+gcc 2_fseek.c -D _FILE_OFFSET_BITS=64
+
+
+#define _GNU_SOURCE
+ #include <stdio.h>
+
+ ssize_t getline(char **lineptr, size_t *n, FILE *stream);
+
+len:行字符数不足120 开辟120
+    >=120 开240
+    》=240  开480
+   >=480 实际  字符+\n+\0
+
+
+void perror(const char *s);
+
+
+ int fflush(FILE *stream);
+刷新缓冲区
+
+高级I/O
+
+int open(const char *pathname, int flags);
+int open(const char *pathname, int flags, mode_t mode);  
+666^022
+110110110
+000010010
+110100100
+644
+
+功能：打开文件
+参数1：打开文件的路径
+参数2：打开文件的属性
+参数3：
+O_CREAT|O_EXCL 如果文件不存在 创建文件 文件已经存在 则返回错误
+vim /usr/include/bits/fcntl.h
+
+
+ssize_t read(int fd, void *buf, size_t count);
+ssize_t write(int fd, const void *buf, size_t count);
+
+13840073317
+
+/**twoday****/
+
+
+一切皆是文件。
+函数功能，函数参数，函数返回值，错误码(数值表示一类错误)。
+单词_单词 单词单词
+
+文件操作步骤：
+1 文件打开
+int open(const char *pathname, int flags);
+int open(const char *pathname, int flags, mode_t mode);
+
+2 文件操作
+ssize_t write(int fd, const void *buf, size_t count)
+功能：从文件中读取数据
+参数：
+fd：文件描述符
+buf：缓冲区
+count：缓冲区大小
+返回值：
+
+ssize_t read(int fd, void *buf, size_t count)
+功能：往文件里写入数据
+fd:文件描述符
+buf：存放数据缓冲区
+count：缓冲区大小，想从文件读取的字节数
+返回值：成功=读取字节数 0=文件末尾 失败=-1
+
+off_t lseek(int fd, off_t offset, int whence)
+功能：对于文件位置指针定位
+fd:
+offset:偏移
+whence：参照 SEEK_SET SEEK_CUR SEEK_END
+返回值：成功=偏移 失败=-1
+
+off_t:/usr/include/sys/types.h
+	# ifndef __USE_FILE_OFFSET64
+	typedef __off_t off_t;//32
+	# else
+	typedef __off64_t off_t;//64
+	# endif
+__USE_FILE_OFFSET64:/usr/include/features.h
+	#if defined _FILE_OFFSET_BITS && _FILE_OFFSET_BITS == 64
+	# define __USE_FILE_OFFSET64    1
+	#endif
+
+--<F4>3 文件关闭
+close
+
+文件描述符：
+系统怎样分配文件描述符：当前系统最小并空闲的文件描述符分配给打开文件
+标准输入=0 键盘
+标准输出=1 屏幕 缓冲区
+标准错误=2 屏幕 没有缓冲区
+
+dup 
+int dup2(int oldfd, int newfd)
+文件描述符的复制，实现了oldfd和newfd同时指向oldfd所指向的文件。
+返回值：成功=newfd 失败=-1
+
+FILE *fdopen(int fd, const char *mode)
+fd：文件描述符
+mode：属性
+返回值：成功=FILE
+
+int fileno(FILE *stream)
+
+
+int stat(const char *path, struct stat *buf);
+int fstat(int fd, struct stat *buf);
+int lstat(const char *path, struct stat *buf);
+功能：根据文件路径/文件描述符获取文件属性
+struct stat {
+		dev_t     st_dev; //设备号
+		ino_t     st_ino; //inode    
+		mode_t    st_mode;//权限    
+		nlink_t   st_nlink;//硬链接数  
+		uid_t     st_uid;//用户id
+		gid_t     st_gid;//用户组id
+		dev_t     st_rdev;//设备号
+		off_t     st_size;//大小
+		blksize_t st_blksize;
+		blkcnt_t  st_blocks;
+		time_t    st_atime;
+		time_t    st_mtime;
+		time_t    st_ctime;
+};
+
+作业：
+利用open\read\write\close实现cp命令
+
+mode_t umask(mode_t mask)
+设置权限屏蔽字
+
+int link(const char *oldpath, const char *newpath);
+创建一个硬链接，不能给目录设置硬链接，不能在不同文件系统上创建硬链接。
+
+int symlink(const char *oldpath, const char *newpath)
+创建一个软链接
+oldpath:输入绝对路径
+
+硬链接相当于是对于源文件的备份，源文件删所不影响连接文件。
+软链接相当于是快捷方式，如果源文件删除，则链接文件失效。
+
+目录：
+int mkdir(const char *pathname, mode_t mode)
+创建目录
+
+int rmdir(const char *pathname);
+删除目录
+注意： which must be empty
+
+int chdir(const char *path)
+切换调用进程的工作目录
+
+遍历目录
+DIR *opendir(const char *name);
+打开目录
+返回:成功=目录句柄
+
+struct dirent *readdir(DIR *dirp);
+
+int closedir(DIR *dirp);
+
+//etc/shadow
+struct spwd *getspnam(const char *name)
+根据系统用户获取相应信息struct spwd
+
+ftp: f:file t:translation p:protocol 用户
+
+// /etc/passwd
+struct passwd *getpwnam(const char *name);
+struct passwd *getpwuid(uid_t uid);
+//打开/etc/passwd
+void setpwent(void);
+//获取一体记录
+struct passwd *getpwent(void);
+//关闭/etc/passwd
+void endpwent(void);
+
+命令(ls) [-选项(lai)] [选项参数(文件/目录)]
+int getopt(int argc, 
+           char * const argv[],
+           const char *optstring);
+extern char *optarg;
+extern int optind, opterr, optopt;
+
+
+
+作业：
+实现：
+ls       文件名称
+ls -l    属性+文件名称
+ls -a    所有文件名称
+ls -i    inode+文件名称
+ls -la   所有文件属性+文件名称
+ls -li   文件属性+文件名称+inode
+ls -lia  所有文件属性+文件名称+inode
+ls -lia 文件/目录 
+ls 文件/目录
+
+/******* 2222*******************/
+
+
+ssize_t write(int fd, const void *buf, size_t count)
+功能：从文件中读取数据
+参数：
+fd：文件描述符
+buf：缓冲区
+count：缓冲区大小
+返回值：
+
+ssize_t read(int fd, void *buf, size_t count)
+功能：往文件里写入数据
+fd:文件描述符
+buf：存放数据缓冲区
+count：缓冲区大小，想从文件读取的字节数
+返回值：成功=读取字节数 0=文件末尾 失败=-1
+
+int dup2(int oldfd, int newfd)
+文件描述符的复制，实现了oldfd和newfd同时指向oldfd所指向的文件。
+返回值：成功=newfd 失败=-1
+
+int stat(const char *path, struct stat *buf);
+int fstat(int fd, struct stat *buf);
+int lstat(const char *path, struct stat *buf);
+功能：根据文件路径/文件描述符获取文件属性
+struct stat {
+		dev_t     st_dev; //设备号
+		ino_t     st_ino; //inode    
+		mode_t    st_mode;//权限    
+		nlink_t   st_nlink;//硬链接数  
+		uid_t     st_uid;//用户id
+		gid_t     st_gid;//用户组id
+		dev_t     st_rdev;//设备号
+		off_t     st_size;//大小  long int
+		blksize_t st_blksize;
+		blkcnt_t  st_blocks;
+		time_t    st_atime;
+		time_t    st_mtime;//最后一次修改的时间
+		time_t    st_ctime;//chmod
+};
+
+struct passwd *getpwnam(const char *name);
+struct passwd *getpwuid(uid_t uid);
+struct passwd {
+               char   *pw_name;       /* username */
+               char   *pw_passwd;     /* user password */
+               uid_t   pw_uid;        /* user ID */
+               gid_t   pw_gid;        /* group ID */
+               char   *pw_gecos;      /* real name */
+               char   *pw_dir;        /* home directory */
+               char   *pw_shell;      /* shell program */
+           };
+
+
+struct group *getgrnam(const char *name);
+
+struct group *getgrgid(gid_t gid);
+struct group {
+               char   *gr_name;       /* group name */
+               char   *gr_passwd;     /* group password */
+               gid_t   gr_gid;        /* group ID */
+               char  **gr_mem;        /* group members */
+           };
+
+ time_t time(time_t *t);
+作用：获取以“second”为单位 以1970.1.1 0点开始计时的当前时间值作为time的返回值
+并把它存在t所指区域中（不需要存储可以设置t为NULL）
+
+struct tm *gmtime(const time_t *timep);
+功能：将日历时间转为世界标准时间
+ struct tm *localtime(const time_t *timep);
+功能：将日历时间转为本地时间
+ char *asctime(const struct tm *tm);
+功能：将时间转换成字符串时间
+char *ctime(const time_t *timep);
+
+struct tm {
+               int tm_sec;         /* seconds */
+               int tm_min;         /* minutes */
+               int tm_hour;        /* hours */
+               int tm_mday;        /* day of the month */
+               int tm_mon;         /* month */
+               int tm_year;        /* year */
+               int tm_wday;        /* day of the week */
+               int tm_yday;        /* day in the year */
+               int tm_isdst;       /* daylight saving time */
+           };
+
+练习：从命令行提供的一个文件或目录路径 显示这个文件或目录的最后修改时间 
+练习：显示某个目录下文件中 最大的文件（不包括目录-）
+
+
+目录：
+
+DIR *opendir(const char *name);
+打开目录
+返回:成功=目录句柄
+
+struct dirent *readdir(DIR *dirp);
+ struct dirent {
+               ino_t          d_ino;       /* inode number */
+               off_t          d_off;       /* offset to the next dirent */
+               unsigned short d_reclen;    /* length of this record */
+               unsigned char  d_type;      /* type of file; not supported
+                                              by all file system types */
+               char           d_name[256]; /* filename */
+           };
+
+
+
+
+int closedir(DIR *dirp);
+
+void rewinddir(DIR *dirp);
+
+int mkdir(const char *pathname, mode_t mode)
+创建目录
+
+int rmdir(const char *pathname);
+删除目录
+注意： which must be empty
+
+int chdir(const char *path)
+切换调用进程的工作目录
+char *getcwd(char *buf, size_t size);
+获取当前工作路径
+ void seekdir(DIR *dirp, long offset);
+ long telldir(DIR *dirp);
+
+作业：目录扫描器
+a.out /home
+
+
+ls
+-ail  /home/file
+
+*******33333333333333333333333333333***********
+
+
+goto:
+
+
+int setjmp(jmp_buf env);
+void longjmp(jmp_buf env, int val);//
+
+ /etc/passwd
+struct passwd *getpwnam(const char *name);
+struct passwd *getpwuid(uid_t uid);
+
+//打开/etc/passwd
+void setpwent(void);
+
+//获取一条记录
+struct passwd *getpwent(void);
+
+//关闭/etc/passwd
+void endpwent(void);
+struct passwd {
+               char   *pw_name;       /* username */
+               char   *pw_passwd;     /* user password */
+               uid_t   pw_uid;        /* user ID */
+               gid_t   pw_gid;        /* group ID */
+               char   *pw_gecos;      /* real name */
+               char   *pw_dir;        /* home directory */
+               char   *pw_shell;      /* shell program */
+           };
+
+
+
+/etc/shadow
+struct spwd *getspnam(const char *name)
+根据系统用户获取相应信息struct spwd
+
+void setspent(void);
+struct spwd *getspent(void);
+void endspent(void);
+ struct spwd {
+               char *sp_namp;     /* Login name */
+               char *sp_pwdp;     /* Encrypted password */
+               long  sp_lstchg;   /* Date of last change (measured
+                                     in days since 1 Jan 1970) */
+               long  sp_min;      /* Min # of days between changes */
+               long  sp_max;      /* Max # of days between changes */
+               long  sp_warn;     /* # of days before password expires
+                                     to warn user to change it */
+               long  sp_inact;    /* # of days after password expires
+                                     until account is disabled */
+               long  sp_expire;   /* Date when account expires (measured
+                                     in days since 1 Jan 1970) */
+               unsigned long sp_flag;  /* Reserved */
+           };
+
+char *getpass( const char *prompt);
+char *crypt(const char *key, const char *salt);
+Link with -lcrypt
+
+进程：程序运行的载体 是os中分配资源的最小单位 
+线程是cpu调度的最小单位
+
+进程控制块（PCB）
+vim /usr/src/kernels/2.6.32-358.el6.i686/include/linux/sched.h
+
+进程状态：
+ps -aux
+
+R：运行（可执行状态）
+S：可中断等待状态
+s：会话首进程
+<:高优先级
+N：低优先级
+l：多线程
++：当前进程位于前台
+D：守护进程
+Z：僵尸进程
+T：暂停
+
+return功能：返回调用函数
+exit功能：直接结束进程
+
+
+return/exit _exit区别：
+1、exit/return结束时会刷新IO缓冲区 _exit 直接结束 不刷新IO缓冲区
+2、exit/return 执行后 进程注册的退出函数执行 _exit进程注册的退出函数不执行
+
+
+int atexit(void (*function)(void));
+void _exit(int status)
+
+ pid_t fork(void);
+
+pid_t getpid(void);
+获取当前进程pid
+pid_t getppid(void);
+获取当前进程父进程的pid
+
+作业：mycp dir1 dir2
+
+/444444444444444444444444444444444444444444/
+fseeko fflush fdopen write read open close getline dup2 stat/fstat/lstat link symlink lseek  stdin stdout stderr fileno perror errno strerror
+opendir closedir readdir mkdir rmdir chdir getcwd 
+getopt 
+getuid  getpwnam getgrgid getgrnam  setpwent getpwent endpwent   
+getspnam setspent getspent  enspent
+
+sprintf getpass crypt umask 
+
+time localtime ctime asctime  
+
+fork sleep setjmp-longjmp goto  exit/return  _exit   atexit
+
+fork:代码区和数据区 复制
+ pid_t wait(int *status);
+
+ pid_t waitpid(pid_t pid, int *status, int options);
+参数3：  0  等待子进程结束为止
+        WNOHANG  不等待
+      
+参数1：
+	pid<-1    等待其进程组gid等于pid绝对值的任意子进程  
+	pid==-1   任意子进程
+	pid==0    等待其进程组id等于当前进程组id的任意子进程
+	pid >0   进程id号为pid的进程
+
+参数2：
+ NULL   丢弃结束信息
+WIFEXITED(status) 判断是否正常退出  真 正常退出
+WEXITSTATUS(status) 取得进程结束时的返回值
+WIFSIGNALED(status) 判断是否是被信号终止 信号终止返回真
+WTERMSIG(status)  判断是被哪个信号终止的
+
+int system(const char *command);
+ int access(const char *pathname, int mode);
+检测文件权限
+
+F_OK 测试文件是否存在
+R_OK,可读 W_OK可写 X_OK 可执行
+
+作业：写个程序 开启3个子进程 每个子进程每秒打印一个字符 第一个进程打印a 第二个进程打印b
+     第三个进程打印c 然后父进程结束  file
+
+     再写个程序 终止上面的所有子进程  system(cmd);  cmd kill+id 
+
+
+
+5555555555555555555555555555555555555555555555555
+
+
+
+
+int system(const char *command);
+char *getenv(const char *name);
+根据环境变量名获取环境变量值 如果环境变量名不存在 则返回NULL
+
+ int putenv(char *string);
+string格式:name=value
+如果name存在 则修改name的值为value
+如果那么不存在 添加name到环境变量列表中并赋值为value
+
+ int setenv(const char *name, const char *value, int overwrite);
+
+int unsetenv(const char *name);
+
+
+char *strchr(const char *s, int c);
+在字符串里找字符c 没找到 返回NULL 找到则返回字符地址
+
+
+
+extern char **environ;
+
+       int execl(const char *path, const char *arg, ...);
+       int execlp(const char *file, const char *arg, ...);
+       int execle(const char *path, const char *arg,
+                  ..., char * const envp[]);
+       int execv(const char *path, char *const argv[]);
+       int execvp(const char *file, char *const argv[]);
+功能：在本进程中加载另一个程序并从头开始执行
+作业：shell
+
+[root@doudou five_day]#
+
+1 getenv gethostname  getcwd root #  $
+2 ls -ial /home
+3 mkdir pwd cd echo $PATH
+4 > < >> 
+
+66666666666666666666666666666666666666666
+
+
+进程组：多个进程的集合 组长id就是进程组id
+ int killpg(int pgrp, int sig);
+ int kill(pid_t pid, int sig);
+pid_t getpgrp(void);
+获取调用进程所在进程组的id
+
+pid_t getpgid(pid_t pid);
+获取指定进程所在进程组id 
+int setpgid(pid_t pid, pid_t pgid);
+setpgid(0,0) 创建新的进程组 并且创建进程的进程为该进程组组长
+pid!=pgid  将pid表示的进程加入pgid表示的进程组中
+
+会话：进程组的集合（进程组）
+pid_t getsid(pid_t pid);
+获取当前进程所属会话ID
+
+pid_t setsid(void);
+1 摆脱原会话
+2 摆脱原进程组
+3 摆脱终端
+
+作业：
+守护进程：
+int daemon(int nochdir, int noclose);
+
+1 父进程能消亡 子进程运行
+2 改变工作目录 chdir("/")
+3 0 1 2  /dev/null   dup2
+4 摆脱  setsid
+5 创建文件无权限掩码 umask（0）
+
+7777777777777777777777777777777777
+
+
+killpg
+kill
+kill(int pid,int signo)
+ getpgrp setpgid getpgid fork getpid getppid getgid setgid 
+setsid  getsid system exec
+进程 僵尸进程 孤儿进程
+进程间通信
+信号 管道 信号量 消息队列 socket。。。
+
+信号  man 7 signal
+wait-waitpid
+
+SIGKILL 9  必杀信号
+SIGSTOP  停止信号 进程立即停止 不会结束
+SIGCONT 继续信号 系统会让停止的进程继续执行
+SIGINT ctrl+c 发出的信号 默认终止进程
+SIGQUIT CTRL+\ 发出的信号 默认终止进程 产生内存映像文件
+SIGTSTP CTRL+Z  发出的信号 默认停止进程
+SIGTERM  kill命令默认发送的信号
+SIGCHLD 子进程结束或停止的信号 默认时忽略
+SIGALRM 闹钟信号 alarm定时时间到了 系统会发出的信号 默认终止进程
+ 
+kill -l
+typedef void (*sighandler_t)(int);
+
+sighandler_t signal(int signum, sighandler_t handler);
+signal(信号，func);//  void func(int)
+SIG_IGN 忽略  
+SIG_DFL 默认
+
+SIGKILL SIGSTOP 不能自己处理
+
+kill -信号 进程id 发送信号给指定进程
+
+
+unsigned int alarm(unsigned int seconds);
+功能：定时 指定秒数后 系统向进程发送SIGALRM信号
+alarm 本身不等待
+seconds 秒数
+返回：返回上次闹钟剩余时间
+
+练习：写个小程序 测试打字速度
+
+
+int pause(void);
+int kill(pid_t pid, int sig);
+向指定进程（pid）发送信号sig
+pid 0 表示向本组所有进程发信号
+sig 0 不发信号 但检测进程id是否存在
+
+返回：成功返回0 失败返回-1
+
+
+
+作业：
+1、实现 kill -signo pid  kill()  man atoi itoa
+2、编写daemon进程 实现：
+当监测到SIGHUP信号时 该进程获得系统运行时间(/proc/uptime文件 第一列为系统启动到现在的时间 第二列为系统空闲时间) 将其追加写入到日志文件  检测到SIGUSR1信号时 后台进程退出
+
+
+***************88888888888888888888888*****************/
+
+ fopen open close read write opendir closedir readdir mkdir chdir rmdir
+getcwd lseek stat/fstat/lstat dup2 fflush strerror sprintf link symlink  waitpid/wait
+fork clone getpid getppid getpgrp setsid daemon   exec system
+kill raise pause setjmp longjmp getopt glob crypt getpass exit _exit atexit
+getpwuid getpwnam getgrnam getgrgid getspnam
+setpwent getpwent endpwent getspent setspent endspent 
+time ctime asctime localtime    alarm setitimer  
+signal  
+sigemptyset sigaddset sigfillset sigdelset sigismember
+sigprocmask sigpending  
+
+sigaction/siqueue 处理带参数的信号 
+ 
+int sigaction(int signum, const struct sigaction *act,
+                     struct sigaction *oldact);
+
+struct sigaction {
+               void     (*sa_handler)(int);//同signal 表示无参信号处理函数
+               void     (*sa_sigaction)(int, siginfo_t *, void *);//
+               sigset_t   sa_mask;//处理该信号时要屏蔽的信号
+               int        sa_flags;
+	// 0 默认使用无参的信号处理函数 SA_SIGINFO 表示使用有参的信号处理函数
+               void     (*sa_restorer)(void);
+           };
+
+ siginfo_t {
+               int      si_signo;    /* Signal number */
+               int      si_errno;    /* An errno value */
+               int      si_code;     /* Signal code */
+               int      si_trapno;   /* Trap number that caused
+                                        hardware-generated signal
+                                        (unused on most architectures) 
+*/
+               pid_t    si_pid;      /* Sending process ID */哪个进程发送的
+               uid_t    si_uid;      /* Real user ID of sending process
+ */哪个用户发来的
+               int      si_status;   /* Exit value or signal */
+               clock_t  si_utime;    /* User time consumed */
+               clock_t  si_stime;    /* System time consumed */
+               sigval_t si_value;    /* Signal value */发送信号附带的数据
+               int      si_int;      /* POSIX.1b signal */
+               void    *si_ptr;      /* POSIX.1b signal */
+               int      si_overrun;  /* Timer overrun count; POSIX.1b timers */
+               int      si_timerid;  /* Timer ID; POSIX.1b timers */
+:
+
+
+int sigqueue(pid_t pid,  int  sig,  const  union  sigval
+       value);
+
+ union sigval {
+               int   sival_int;
+               void *sival_ptr;
+           };
+
+
+练习：slow cat   char/s
+
+共享内存
+
+ int ftruncate(int fd, off_t length);
+会将参数fd指定的文件大小改为参数length 指定的大小
+void *mmap(void *addr, size_t length, int prot, int flags,
+                  int fd, off_t offset);
+
+把fd代表的文件从离文件头offset的地方 开始的length个字节的数据 映射到内存addr开始的地址
+返回：实际映射成的地址
+
+addr一般不指定 赋值为NULL 即让系统自动选择合适地址
+
+prot：
+	PROT_EXEC  Pages may be executed.
+
+       PROT_READ  Pages may be read.
+
+       PROT_WRITE Pages may be written.
+
+flag：
+MAP_SHARED  共享 内存和文件同步
+MAP_PRIVATE 私有 内存和文件不同步
+
+int munmap(void *addr, size_t length);
+用于进程地址空间中结束映射关系
+addr：调用mmap返回的进程地址空间中用于映射的内存区域首地址
+
+
+作业：
+sigaction siqueue
+信号版 cat
+
+练习：mmap实现文件cp
+
+*************99999999999999999999999999999*************
+
+
+
+
+/****************10000000000000000000000/
+
+
+专用进程间通信方式：共享内存/消息队列/信号量
+ #include <sys/ipc.h> 公共头文件
+ 
+#include <sys/shm.h>
+
+int shmget(key_t key, size_t size, int shmflg);
+创建或取得一个共享内存对象 （得到一个共享内存标识符或创建一个共享内存对象并返回共享内存标识符）
+
+key：0 建立
+大于0  视shmflag来确定操作 key可以通过ftok返回
+
+size：新建的共享内存大小 以字节为单位   
+0 只获取共享内存时指定为0
+shmflag：
+
+
+void *shmat(int shmid, const void *shmaddr, int shmflg);
+将共享内存对象挂接到本进程内存中 返回挂接后的地址
+shmid：共享内存标识符
+shmaddr：NULL 让内核选一个合适地址位置
+shmflg：SHM_RDONLY 为只读模式 其他为读写模式
+返回：映射成功的地址
+
+int shmdt(const void *shmaddr);
+解除挂接
+
+int shmctl(int shmid, int cmd, struct shmid_ds *buf);
+删除一个共享内存对象
+
+练习：shm版本cp
+
+*********************************************************
+匿名管道
+int pipe(int pipefd[2]);
+创建管道 两端各用一个文件描述符表示
+读端的文件描述符保存在pipefd[0]中 写端的文件描述符保存在pipefd[1]中
+
+发送进程关闭读端 保留写端 接收进程关闭写端 保留读端
+
+注意：
+读管道时 
+	如果管道中没有数据 则阻塞
+	如果没有写端  read返回0
+写管道时  如果没有读端 write返回-1 并产生一个SIGPIPE信号
+
+练习：父进程从键盘读入字符串写入管道 子进程读数据-
+如果字符串中的字符为大写 则转换为小写 并将字符串输出到屏幕
+
+
+命名管道
+ int mkfifo(const char *pathname, mode_t mode);
+按指定的权限创建管道文件
+
+ int unlink(const char *pathname);
+
+作业：实现 ls | grep "2"
+
+
+/***************************11111111111111111111111111111111111***********/
+
+
+
+专有进程间通信
+#include<sys/ipc.h>
+
+#include <sys/msg.h>
+
+key_t ftok(const char *pathname, int proj_id);
+
+消息队列
+ int msgget(key_t key, int msgflg);
+创建或取得一个消息队列对象
+成功返回对象id 失败-1
+
+int msgsnd(int msqid, const void *msgp, size_t msgsz, int msgflg);
+打包发送一个消息数据到消息队列中
+msqid：msgget返回值
+msgflg：0 IPC_NOWAIT
+
+ssize_t msgrcv(int msqid, void *msgp, size_t msgsz,long msgtyp,int msgflg);
+从消息队列中接收一个指定类型的消息
+msgtyp：0 什么类型都可以
+msgflg：0 没有指定类型的消息就等待 
+       IPC_NOWAIT 不等待
+
+struct msgbuf {
+               long mtype;       /* message type, must be > 0 */消息类型
+               char mtext[1];    /* message data */任意类型的任意消息
+           };
+
+int msgctl(int msqid, int cmd, struct msqid_ds *bu**f);
+作业1：消息队列版cat
+作业2 ：管道版cat
+
+
+
+*******************************************
+
+信号
+sinal sigaction
+
+共享内存
+mmap  ftruncate-mmap-(SHARED)-munmap-close
+
+
+专有进程间通信
+key
+shmget
+shmat
+shmdt
+shmctl
+
+管道 
+匿名  pipe
+有名 mkfifo
+
+专有进程间通信
+消息队列：
+msgget/snd/rcv/ctl
+
+信号量：控制访问同一资源的进程的数量 控制多个进程同步
+ int semget(key_t key, int nsems, int semflg);
+创建或取得一个信号量集对象
+nsems：信号量的个数 一般是1
+成功返回对象id 失败-1
+
+semflg：
+
+  int semop(int semid, struct sembuf *sops, unsigned nsops);
+对信号量进行数组sops所指定的操作 
+nsops：数组中元素的个数 一般是1
+
+struct sembuf
+{
+unsigned short sem_num;  /* semaphore number */要操作的信号量编号 一般0 表示一个信号量
+           short          sem_op;   /* semaphore operation */计数器操作 一般为+1 或者-1
+           short          sem_flg;  /* operation flags */
+
+	 SEM_UNDO 进程结束时 系统自动复原它对计数器的操作 （一般都指定这个标志）
+
+ int semctl(int semid, int semnum, int cmd, ...);
+
+semctl(semid,0,IPC_RMID,NULL);//删除信号量集对象
+semctl(semid,0,SETVAL,3);//设置编号（下标）为0的信号量的值为3
+
+
+作业：
+进程1 从键盘获取一个字符串 放到共享内存中
+进程2：从共享内存上获取字符串 转为大写 放到内存中
+进程1获取转换后的字符串并输出到屏幕
+
+网络通信：
+协议：
+网络通信的协议模型:OSI
+物理层：物理设备
+数据链路层：
+网络层：ip
+传输层：tcp udp
+会话层：
+表示层：字节序 0x12345678
+应用层：
+
+大端模式：低位存于高地址  高位存于低地址
+小端模式：低位存于低地址 高位存于高地址
+
+ uint16_t htons(uint16_t hostshort);//2字节的本机格式到网络格式
+h:host to n:network s:short
+
+uint32_t htonl(uint32_t hostlong);//4字节的本机格式转到网络格式
+
+uint16_t ntohs(uint16_t netshort);//2字节的网络格式转到本机格式
+
+uint32_t ntohl(uint32_t netlong);//4字节的网络格式转到本机格式
+
+ int inet_pton(int af, const char *src, void *dst);
+把点分十进制格式ip地址转成内部格式ip地址
+ const char *inet_ntop(int af, const void *src,
+                             char *dst, socklen_t size);
+把内部格式ip地址转成点分十进制格式ip地址
+
+in_addr_t inet_addr(const char *cp);
+把点分十进制格式ip地址转成内部格式ip地址
+
+int inet_aton(const char *cp, struct in_addr *inp);
+把IPV4的点分十进制地址转成内部格式后 存到第二个参数所指向的结构里去
+
+typedef uint32_t in_addr_t;
+
+           struct in_addr {
+               in_addr_t s_addr;
+           };
+
+
+
+ char *inet_ntoa(struct in_addr in);
+把结构中的IPV4的地址ip地址转成点分十进制字符串返回
+
+思考：1 vfork 和fork区别
+       	
+
+     2 tcp三次握手描述过程
+      
+
+tcp
+
+话机：
+int socket(int domain, int type, int protocol);
+domain:协议族 AF_INET（ipv4）/AF_INET6（ipv6）
+type：套接字类型
+SOCK_STREAM 字节流套接字 用于tcp协议
+SOCK_DGRAM   数据报套接字 用于UDP
+
+protocol：0
+返回：返回一个套接字 失败返回-1
+
+
+绑定：
+int bind(int sockfd, const struct sockaddr *addr,socklen_t addrlen);
+绑定本机信息到文件描述符
+sockfd:socket返回值 套接字
+addr:my_addr
+ 
+
+struct sockaddr {
+               sa_family_t sa_family;
+               char        sa_data[14];
+           }
+
+vim /usr/include/netinet/in.h
+struct sockaddr_in
+  {
+    unsigned short sin_family;   //协议族
+    in_port_t sin_port;         /* Port number.  */
+    struct in_addr sin_addr;        /* Internet address.  */
+   };
+typedef uint32_t in_addr_t;
+
+           struct in_addr {
+               in_addr_t s_addr;
+           };
+
+
+多路：
+int listen(int sockfd, int backlog);
+sockfd:
+backlog:最大连接数
+
+同时允许多少个连接请求等待处理
+
+int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+以阻塞的方式等待连接
+返回值：返回一个跟客户端连接的新套接字 用于传输数据
+
+sockfd：在哪个套接字上等 
+会取得对方套接字信息
+
+write/read.........................
+
+挂断
+close();
+
+
+
+客户端：
+int socket(int domain, int type, int protocol);
+
+拨打：
+int connect(int sockfd, const struct sockaddr *addr,
+                   socklen_t addrlen);
+
+
+write/read
+挂断
+close
+
+作业：
+1、客户端从键盘获取字符串 发送给服务器 服务器收到后 转为大写 发回客户端 
+2、做个回射服务器
+
+
+信号
+sinal sigaction
+
+共享内存
+mmap  ftruncate-mmap-(SHARED)-munmap-close
+
+
+专有进程间通信
+key
+shmget
+shmat
+shmdt
+shmctl
+
+管道 
+匿名  pipe
+有名 mkfifo
+
+专有进程间通信
+消息队列：
+msgget/snd/rcv/ctl
+
+信号量：控制访问同一资源的进程的数量 控制多个进程同步
+ int semget(key_t key, int nsems, int semflg);
+创建或取得一个信号量集对象
+nsems：信号量的个数 一般是1
+成功返回对象id 失败-1
+
+semflg：
+
+  int semop(int semid, struct sembuf *sops, unsigned nsops);
+对信号量进行数组sops所指定的操作 
+nsops：数组中元素的个数 一般是1
+
+struct sembuf
+{
+unsigned short sem_num;  /* semaphore number */要操作的信号量编号 一般0 表示一个信号量
+           short          sem_op;   /* semaphore operation */计数器操作 一般为+1 或者-1
+           short          sem_flg;  /* operation flags */
+
+	 SEM_UNDO 进程结束时 系统自动复原它对计数器的操作 （一般都指定这个标志）
+
+ int semctl(int semid, int semnum, int cmd, ...);
+
+semctl(semid,0,IPC_RMID,NULL);//删除信号量集对象
+semctl(semid,0,SETVAL,3);//设置编号（下标）为0的信号量的值为3
+
+
+作业：
+进程1 从键盘获取一个字符串 放到共享内存中
+进程2：从共享内存上获取字符串 转为大写 放到内存中
+进程1获取转换后的字符串并输出到屏幕
+
+
+
+/*********************************************
+
+网络通信：
+协议：
+网络通信的协议模型:OSI
+物理层：物理设备
+数据链路层：
+网络层：ip
+传输层：tcp udp
+会话层：
+表示层：字节序 0x12345678
+应用层：
+
+大端模式：低位存于高地址  高位存于低地址
+小端模式：低位存于低地址 高位存于高地址
+
+ uint16_t htons(uint16_t hostshort);//2字节的本机格式到网络格式
+h:host to n:network s:short
+
+uint32_t htonl(uint32_t hostlong);//4字节的本机格式转到网络格式
+
+uint16_t ntohs(uint16_t netshort);//2字节的网络格式转到本机格式
+
+uint32_t ntohl(uint32_t netlong);//4字节的网络格式转到本机格式
+
+ int inet_pton(int af, const char *src, void *dst);
+把点分十进制格式ip地址转成内部格式ip地址
+ const char *inet_ntop(int af, const void *src,
+                             char *dst, socklen_t size);
+把内部格式ip地址转成点分十进制格式ip地址
+
+in_addr_t inet_addr(const char *cp);
+把点分十进制格式ip地址转成内部格式ip地址
+
+int inet_aton(const char *cp, struct in_addr *inp);
+把IPV4的点分十进制地址转成内部格式后 存到第二个参数所指向的结构里去
+
+typedef uint32_t in_addr_t;
+
+           struct in_addr {
+               in_addr_t s_addr;
+           };
+
+
+
+ char *inet_ntoa(struct in_addr in);
+把结构中的IPV4的地址ip地址转成点分十进制字符串返回
+
+思考：1 vfork 和fork区别
+     2 tcp三次握手描述过程
+      
+
+tcp
+
+话机：
+int socket(int domain, int type, int protocol);
+domain:协议族 AF_INET（ipv4）/AF_INET6（ipv6）
+type：套接字类型
+SOCK_STREAM 字节流套接字 用于tcp协议
+SOCK_DGRAM   数据报套接字 用于UDP
+
+protocol：0
+返回：返回一个套接字 失败返回-1
+
+
+绑定：
+int bind(int sockfd, const struct sockaddr *addr,socklen_t addrlen);
+绑定本机信息到文件描述符
+sockfd:socket返回值 套接字
+addr:my_addr
+ 
+
+struct sockaddr {
+               sa_family_t sa_family;
+               char        sa_data[14];
+           }
+
+vim /usr/include/netinet/in.h
+struct sockaddr_in
+  {
+    unsigned short sin_family;   //协议族
+    in_port_t sin_port;         /* Port number.  */
+    struct in_addr sin_addr;        /* Internet address.  */
+   };
+typedef uint32_t in_addr_t;
+
+           struct in_addr {
+               in_addr_t s_addr;
+           };
+
+
+多路：
+int listen(int sockfd, int backlog);
+sockfd:
+backlog:最大连接数
+
+同时允许多少个连接请求等待处理
+
+int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+以阻塞的方式等待连接
+返回值：返回一个跟客户端连接的新套接字 用于传输数据
+
+sockfd：在哪个套接字上等 
+会取得对方套接字信息
+
+write/read.........................
+
+挂断
+close();
+
+
+
+客户端：
+int socket(int domain, int type, int protocol);
+
+拨打：
+int connect(int sockfd, const struct sockaddr *addr,
+                   socklen_t addrlen);
+
+
+write/read
+挂断
+close
+
+作业：
+1、客户端从键盘获取字符串 发送给服务器 服务器收到后 转为大写 发回客户端 
+2、做个回射服务器
+
+
+***********************************************
+
+UDP
+接收端                                                     
+nt socket(int domain, int type, int protocol);
+
+int bind(int sockfd, const struct sockaddr *addr,socklen_t addrlen);
+绑定本机信息到文件描述符
+sockfd:socket返回值 套接字
+addr:my_addr
+
+
+ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags,
+                        struct sockaddr *src_addr, socklen_t *addrlen);
+
+accept+read
+以阻塞的方式接收数据
+sockfd:套接字
+buf:存放接收的内容
+len:缓冲区的大小 最多可以接收多少个字符
+flags：0 默认 MSG_DONTWAIT
+src_addr:将发送方的地址带回来 
+addrlen:发送方地址长度
+
+返回值：返回实际读到的字节数 失败-1
+	
+
+
+发送端：
+nt socket(int domain, int type, int protocol);
+
+
+ssize_t sendto(int sockfd, const void *buf, size_t len, int flags,
+                      const struct sockaddr *dest_addr, socklen_t addrlen);
+connect+write
+
+发送数据
+sockfd：套接字
+buf：发送的内容
+len：发送内容长度
+flags：0
+dest_addr：往哪个地方发（地址+端口号）
+
+练习：发送端从键盘获取字符串  发给服务器 接收端接收到后 转为大写 发回去 发送端再将结果输出到屏幕上
+
+广播：
+
+int setsockopt(int sockfd, int level, int optname,
+                      const void *optval, socklen_t optlen);
+
+ SOL_SOCKET
+
+SO_BROADCAST
+SO_REUSEADDR
+
+作业：
+编程实现：
+s ip port text 发信息
+r  接收信息（MSG_DONTWAIT）
+a text 回复信息
+q 退出
+
+
+
+***************************************************************
+
+
+组播：
+224.0.0.0-230.255.255.255
+
+setsockopt(sockfd,IPPROTO_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(struct ip_mreq));
+
+struct ip_mreq
+  {
+    /* IP multicast address of group.  */组播 组ip
+    struct in_addr imr_multiaddr;
+
+    /* Local IP address of interface.  */本地某一网络设备接口的ip地址
+    struct in_addr imr_interface;
+  };  
+
+实现：两台机器聊天 进程实现
+
+ftp：进程版
+login
+ls cd put get mkdir pwd quit
+
+*******************************************************
+
+select poll
+
+  int epoll_create(int size);
+size:通知内核最多可以监视多少个文件描述符
+
+
+int   epoll_ctl(int   epfd,   int  op,  int  fd,  struct
+       epoll_event *event);
+epfd：上一个函数返回的文件描述符
+op:
+EPOLL_CTL_ADD 把一个文件描述符添加到句柄
+EPOLL_CTL_MOD 修改已注册的文件描述符
+EPOLL_CTL_DEL 删除 不再监听这个文件描述符
+
+fd：要操作的文件描述符
+event：epoll要监听的事件
+EPOLLIN 读
+EPOLLOUT 写
+EPOLLET 如果监视的一个描述符就绪 epoll会接收到一次通知 接到通知后必须把所有东西读走
+ typedef union epoll_data {
+               void        *ptr;
+               int          fd;
+               __uint32_t   u32;
+               __uint64_t   u64;
+           } epoll_data_t;
+
+           struct epoll_event {
+               __uint32_t   events;      /* Epoll events */
+               epoll_data_t data;        /* User data variable */
+           };
+
+
+
+int epoll_wait(int epfd, struct epoll_event *events,
+                      int maxevents, int timeout);
+检测哪个描述符状态发生改变
+events：实际发生的事件 实际是数组 会把监视的文件描述符活跃的 放到这个数组里
+maxevents：最多可以从文件描述符中 带回多少个活跃的文件描述符
+timeout:-1 不超时 一直等
+
+返回值：真正活跃的描述符个数
+
+
+ The struct epoll_event is defined as :
+
+           typedef union epoll_data {
+               void    *ptr;
+               int      fd;
+               uint32_t u32;
+               uint64_t u64;
+           } epoll_data_t;
+
+           struct epoll_event {
+               uint32_t     events;    /* Epoll events */
+               epoll_data_t data;      /* User data variable */
+           };
+
+
+vfok fork区别
+vfork：先执行子进程
+    内存：共享
+
+线程：轻量及进程CPU调度的最小单位 由进程创建 共享内存
+进程：资源分配的最小单位
+
+主线程：main开始运行的线程
+创建线程的进程结束 未结束的线程随之消亡
+
+int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
+                          void *(*start_routine) (void *), void *arg);
+创建线程
+thread：线程ID
+参数：NULL
+参数3：线程处理函数
+参数4：传递给线程函数的值
+返回值：成功0 失败非0
+
+  int pthread_join(pthread_t thread, void **retval);
+等待线程结束
+
+  void pthread_exit(void *retval);
+终止本线程
+int pthread_cancel(pthread_t thread)
+请求终止别的线程
+
+ int pthread_setcancelstate(int state, int *oldstate);
+
+stata： 
+PTHREAD_CANCEL_ENABLE 允许
+PTHREAD_CANCEL_DISABLE 不允许
+
+//写个小程序 定义一个int数组 10个元素 辅助线程每秒往数组里存放一个整数(100开始 依次递增 顺序存放到数组)
+主线程每秒从数组中取一个元素显示
+   
+
+********************************************************************
+
+
+互斥量：
+pthread_mutex_t m; 
+p
+
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+直接初始化
+thread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
+
+int pthread_mutex_init(pthread_mutex_t *restrict mutex,
+  const pthread_mutexattr_t *restrict attr);
+pthread_mutex_init(&m,NULL);
+初始化一个互斥量
+
+int pthread_mutex_lock(pthread_mutex_t *mutex);
+pthread_mutex_lock(&m);
+对一个互斥量加锁  如果互斥量已经加锁 函数会一直等 等到有线程把这个互斥量解锁后 再去加锁
+
+    
+int pthread_mutex_unlock(pthread_mutex_t *mutex);
+pthread_mutex_unlock(&m);
+对一个互斥量解锁 哪个线程加锁 只能由哪个线程解锁 别的线程不能解
+int pthread_mutex_destroy(pthread_mutex_t *mutex);
+销毁一个互斥量
+//链表：创建（根据输入的数据）--find---delete--print
+
+
+pthread_cond_t c;
+条件变量
+ int pthread_cond_wait(pthread_cond_t *restrict cond,
+              pthread_mutex_t *restrict mutex);
+pthread_cond_wait(&c,&m);
+在一个条件变量上等待通知 条件变量总要根一个互斥量一起使用
+在pthread_cond_wait前必须先把互斥量加锁 pthread_cond_wait函数自动把互斥量解锁后
+处于等待状态 得到通知后结束等待状态 就又会自动将互斥量加锁 然后pthread_cond_wait函数返回
+
+int pthread_cond_signal(pthread_cond_t *cond);
+通知一个等待这个条件的线程
+如果有多个线程在等待 则只有一个得到通知 如果没有线程在等待 这个通知作废 不会保留
+
+ int pthread_cond_broadcast(pthread_cond_t *cond);
+通知所有正在等待这个条件的线程 没有等待的 也作废
+
+int pthread_cond_destroy(pthread_cond_t *cond);
+       int pthread_cond_init(pthread_cond_t *restrict cond,
+              const pthread_condattr_t *restrict attr);
+       pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+
+
+m.type = (long)0;
+
+
+
+
+
+信号量：posix  system v
+sem_t s;
+ 
+int sem_init(sem_t *sem, int pshared, unsigned int value);
+sem_init(&s,0,n)//初始化一个信号量的值为n
+初始化一个信号量
+
+参数2 是否用于进程间  0 表示不在进程间使用
+参数3  计数器的初值
+
+int sem_wait(sem_t *sem);
+sem_wait(&s);//把计数器-1 如果不够减 就等待 直到够减为止
+
+
+int sem_post(sem_t *sem);
+sem_post(&s);//把计数器+1
+
+int sem_destroy(sem_t *sem);
+销毁一个信号量
+
+***********************************************************
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <pthread.h>
+#include <assert.h>
+
+/*
+*线程池里所有运行和等待的任务都是一个Thread_worker
+*由于所有任务都在链表里
+，所以是一个链表结构
+*/
+typedef struct worker
+{
+    /*回调函数，任务运行时会调用此函数，注意也可声明成其它形式*/
+    void *(*process) (void *arg);
+    void *arg;/*回调函数的参数*/
+    struct worker *next;
+
+} Thread_worker;
+
+
+/*线程池结构*/
+typedef struct
+{
+     pthread_mutex_t queue_lock;
+     pthread_cond_t queue_ready;
+
+    /*链表结构，线程池中所有等待任务*/
+     Thread_worker *queue_head;
+
+    /*是否销毁线程池*/
+    int shutdown;
+     pthread_t *threadid;
+    /*线程池中允许的活动线程数目*/
+    int max_thread_num;
+    /*当前等待队列的任务数目*/
+    int cur_queue_size;
+
+} Thread_pool;
+
+//尾插法
+
+int pool_add_worker (void *(*process) (void *arg), void *arg);
+void *thread_routine (void *arg);
+
+
+static Thread_pool *pool = NULL;
+
+void   pool_init (int max_thread_num)
+{
+     pool = (Thread_pool *) malloc (sizeof (Thread_pool));
+     pthread_mutex_init (&(pool->queue_lock), NULL);
+     pthread_cond_init (&(pool->queue_ready), NULL);
+
+     pool->queue_head = NULL;
+
+     pool->max_thread_num = max_thread_num;
+     pool->cur_queue_size = 0;
+
+     pool->shutdown = 0;
+
+     pool->threadid =(pthread_t *) malloc (max_thread_num * sizeof (pthread_t));
+    int i = 0;
+    for (i = 0; i < max_thread_num; i++)
+     { 
+         pthread_create (&(pool->threadid[i]), NULL, thread_routine,NULL);
+     }
+}
+
+
+/*向线程池中加入任务*/
+int pool_add_worker (void *(*process) (void *arg), void *arg)
+{
+    /*构造一个新任务*/
+     Thread_worker *newworker =(Thread_worker *) malloc (sizeof (Thread_worker));
+     newworker->process = process;
+     newworker->arg = arg;
+     newworker->next = NULL;
+
+     pthread_mutex_lock (&(pool->queue_lock));
+    /*将任务加入到等待队列中*/
+     Thread_worker *member = pool->queue_head;
+
+if (member != NULL)
+     {
+        while (member->next != NULL)
+             member = member->next;
+         member->next = newworker;
+     }
+    else
+     {
+         pool->queue_head = newworker;
+     }
+
+     assert (pool->queue_head != NULL);
+
+     pool->cur_queue_size++;
+     pthread_mutex_unlock (&(pool->queue_lock));
+    //唤醒一个等待线程 如果所有线程都在忙碌，这句没有任何作用
+     pthread_cond_signal (&(pool->queue_ready));
+    return 0;
+}
+
+
+/*销毁线程池，等待队列中的任务不会再被执行，但是正在运行的线程会一直
+把任务运行完后再退出*/
+int pool_destroy ()
+{
+    if (pool->shutdown)
+        return -1;/*防止两次调用*/
+     pool->shutdown = 1;
+
+    //唤醒所有等待线程，线程池要销毁
+     pthread_cond_broadcast (&(pool->queue_ready));
+
+    /*阻塞等待线程退出，否则就成僵尸了*/
+    int i;
+    for (i = 0; i < pool->max_thread_num; i++)
+    { 
+		pthread_join (pool->threadid[i], NULL);
+	}
+
+     free (pool->threadid);
+
+    /*销毁等待队列*/
+     Thread_worker *head = NULL;
+    while (pool->queue_head != NULL)
+     {
+         head = pool->queue_head;
+         pool->queue_head = pool->queue_head->next;
+         free (head);
+     }
+    /*条件变量和互斥量也别忘了销毁*/
+     pthread_mutex_destroy(&(pool->queue_lock));
+     pthread_cond_destroy(&(pool->queue_ready));
+    
+     free (pool);
+    /*销毁后指针置空是个好习惯*/
+     pool=NULL;
+    return 0;
+}
+
+
+void *thread_routine (void *arg)
+{
+     printf ("starting thread 0x%x\n", pthread_self ());
+    while (1)
+     {
+         pthread_mutex_lock (&(pool->queue_lock));
+        //如果等待队列为0并且不销毁线程池，则处于阻塞状态
+        while (pool->cur_queue_size == 0 && !pool->shutdown)
+         {
+             printf ("thread 0x%x is waiting\n", pthread_self ());
+             pthread_cond_wait (&(pool->queue_ready), &(pool->queue_lock));
+         }
+
+        //线程池销毁
+        if (pool->shutdown)
+         {
+             pthread_mutex_unlock (&(pool->queue_lock));
+             printf ("thread 0x%x will exit\n", pthread_self ());
+             pthread_exit (NULL);
+         }
+
+         printf ("thread 0x%x is starting to work\n", pthread_self ());
+
+        //assert--调试用
+         assert (pool->cur_queue_size != 0);
+         assert (pool->queue_head != NULL);
+        
+        //等待队列长度减去1，并取出链表中的头元素
+         pool->cur_queue_size--;
+         Thread_worker *worker = pool->queue_head;
+         pool->queue_head = worker->next;
+         pthread_mutex_unlock (&(pool->queue_lock));
+
+        /*调用回调函数，执行任务*/
+         (*(worker->process)) (worker->arg);
+         free (worker);
+         worker = NULL;
+     }
+    
+     pthread_exit (NULL);
+}
+
+   
+void *myprocess (void *arg)
+{
+     printf ("threadid is 0x%x, working on task %d\n", pthread_self (),*(int *) arg);
+     sleep (1);
+    return NULL;
+}
+
+int  main (int argc, char **argv)
+{
+     pool_init (3);
+  
+    int *workingnum = (int *) malloc (sizeof (int) * 10);
+    int i;
+    for (i = 0; i < 10; i++)
+     {
+         workingnum[i] = i;
+         pool_add_worker (myprocess, &workingnum[i]);
+     }
+    
+     sleep (5);
+    
+     pool_destroy ();
+	 printf("[%s = %d line] \n", __FUNCTION__, __LINE__ ); 
+     free (workingnum);
+	 printf("[%s = %d line] \n", __FUNCTION__, __LINE__ ); 
+    return 0;
+}
+
+****************************************************************/
+
+静态库：
+使用归档工具ar将一系列的目标文件集成到一起
+1 将函数的源代码编译成目标文件(.o)
+   gcc -c fun1.c
+    gcc -c fun2.c
+2 创建静态库
+   ar crv libmyfun.a fun1.o fun2.o
+2 程序中使用静态库
+   cp libmyfun.a /usr/lib
+   gcc main.c -lmyfun 
+
+默认搜索路径 /usr/lib
+
+-L 指定搜索路径 -l 指定库名
+
+1 同静态库
+2 创建动态库 gcc -shared -fPIC fun1.o fun2.o -o libmyfunfun.so
+3 使用  cp libmyfunfun.so /usr/lib
+       gcc main.c -lmyfunfun
+
+如果不cp libmyfunfun.so /usr/lib下的话
+通过命令行设置环境变量：
+export LD_LIBRARY_PATH=/home/C/lib/dy/:$LD_LIBRARY_PATH
+
+通过设置配置文件：
+方法1
+vim /etc/ld.so.conf
+加入路径：/home/C/lib/dy
+
+方法2
+vim ~/.bash_profile
+LD_LIBRARY_PATH=/home/C/lib/dy/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+source ~/.bash_profile
+
+gcc main.c libmyfunfun.so -o main
+
+
+
+
+
+
+
+
+
+
+
+

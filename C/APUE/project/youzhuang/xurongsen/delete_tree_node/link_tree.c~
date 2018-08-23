@@ -1,0 +1,236 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#define EMPTY -1
+
+typedef struct Tree
+{
+	int tr_data;
+	int tr_parent;
+	int tr_lt;
+	int tr_rt;
+}sTree,*pTree;
+
+//------------数组实现----------------------------
+void create_memory(void **p,int size);
+void init_tree(sTree str[],int num);
+void init_tree(pTree pstr);
+void init_node(pTree pstr);
+void create_tree(sTree *pstr, int *parr, int num);
+void add_node(pTree pstr,pTree pnew);
+void mid_tree(pTree proot,int num);
+void show_tree(pTree proot,int num);
+void add_node(pTree pstr, int *parr,int root,int n);
+
+//-------------链表实现--------------------------
+void creat_link_tree(pTree *pht,int *parr,int num);
+void add_link_node(pTree ptr,pTree pnew);
+void show_link_tree(pTree pht);
+
+//---------------------------------------
+
+void create_memory(void **p,int size)
+{
+	*p = malloc(size);
+	if(NULL == *p)
+	{
+		printf("malloc error!\n");
+		exit(-1);
+	}
+}
+
+void init_node(pTree pstr)
+{
+	create_memory(&pstr,sizeof(sTree));
+	pstr.tr_lt = -1;
+	pstr.tr_rt = -1;
+	pstr.tr_data = -1;
+	pstr.tr_parent = -1;
+}
+void create_link_tree(pTree *pht,int *parr,int num)
+{
+	int i;
+	init_node(pht);
+	(*pht)->tr_data = parr[0];
+	pTree pnew;
+	for(i=1;i<num;i++)
+	{
+		init_node(&pnew);
+		pnew->tr_data = arr[i];
+		add_link_node(pht,pnew);
+	}
+}
+
+void add_link_node(pTree ptr,pTree pnew)
+{
+	if(pnew->tr_data >= ptr->tr_data)
+	{
+		if(NULL == ptr->tr_rt)
+		{
+			ptr->tr_rt = pnew;
+			pnew->tr_parent = ptr;
+		}
+		else
+		{
+			ptr = ptr->rt;
+			add_link_node(ptr,pnew);
+		}
+	}
+	else
+	{
+		if(NULL == ptr->tr_lt)
+		{
+			ptr->tr_lt = pnew;
+			pnew->tr_parent = ptr;
+		}
+		else
+		{
+			ptr = ptr->lt;
+			add_link_node(ptr,pnew);
+		}
+	}
+}	
+
+void show_link_tree(pTree pht)
+{
+	//mid_show();
+	if(pht->tr_lt != EMPTY)
+	{
+		show_tree(pht->tr_lt);
+	}
+	printf("%c ",pht->tr_data);
+	if(pht->tr_rt != EMPTY)
+	{
+		show_tree(pht->tr_rt);
+	}
+}
+#if 0
+
+void create_tree(pTree pstr, int *parr,int num)
+{
+	int i;
+	sTree snew;
+	pstr[0].tr_data = parr[0];
+	for(i=1;i<num;i++)
+	{
+		init_node(&snew);
+		snew.tr_data = parr[i];
+		//add_node(pstr,snew);
+		add_link_node(pstr,snew);
+	}
+}
+void add_node(pTree pstr,pTree pnew)
+{
+	pTree phead = pstr;
+	if(phead.tr_data >= pnew.tr_data)
+	{
+		if(phead.tr_lt == NULL)
+		{
+			pnew.tr_parent = phead;
+			phead.tr_lt = pnew;
+		}
+		else
+		{
+			add_node(pstr.tr_lt,pnew);
+		}
+	}
+	else
+	{
+		if(phead.tr_rt == NULL)
+		{
+			pnew.tr_parent = phead;
+			phead.tr_rt = pnew;
+		}
+		else
+		{
+			add_node(pstr.tr_rt,pnew);
+		}
+	}
+}
+
+void create_tree(sTree *pstr, int *parr, int num)
+{
+	int i,left,right,fa;
+	char ch;
+	int data;
+	pstr[0].tr_data = parr[0];
+	for(i=1;i<num;i++)
+	{
+		pstr[i].tr_data = parr[i];
+		add_node(pstr,parr,0,i);
+	}
+}
+void init_tree(sTree str[],int num)
+{
+	int i;
+	for(i=0;i<num;i++)
+	{
+//		create_memory((void **)&str[i],sizeof(sTree));
+		str[i].tr_lt = -1;
+		str[i].tr_data = -1;
+		str[i].tr_parent = -1;
+		str[i].tr_rt = -1;
+	}
+}
+
+void add_node(pTree pstr, int *parr,int root,int n)
+{
+	if(pstr[root].tr_data >= parr[n])
+	{
+		if(pstr[root].tr_lt == EMPTY)
+		{
+			pstr[n].tr_parent = root;
+			pstr[root].tr_lt = n;
+		}
+		else
+		{
+			add_node(pstr,parr,pstr[root].tr_lt,n);
+		}
+	}
+	else
+	{
+		if(pstr[root].tr_rt == EMPTY)
+		{
+			pstr[n].tr_parent = root;
+			pstr[root].tr_rt = n;
+		}
+		else
+		{
+			add_node(pstr,parr,pstr[root].tr_rt,n);
+		}
+	}
+}
+#endif
+void mid_tree(pTree proot,int num)
+{
+	if(proot[num].tr_lt != EMPTY)
+	{
+		mid_tree(proot,proot[num].tr_lt);
+	}
+	printf("%d  ",proot[num].tr_data);
+	if(proot[num].tr_rt != EMPTY)
+	{
+		mid_tree(proot, proot[num].tr_rt);
+	}
+}
+
+void show_tree(pTree proot,int num)
+{
+	//prev_tree
+	mid_tree(proot, 0);//中序输出
+	printf("\n");
+	//next_tree
+}
+
+int main()
+{
+	int arr[]={22,7,12,34,30,45,23};
+//	sTree str[7];
+//	init_tree(str,7);
+
+//	create_tree(str,arr,7);
+//	show_tree(str,7);
+	pTree pht;
+	create_link_node(&pht,arr,7);
+	show_link_tree(ptr);
+}

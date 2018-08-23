@@ -1,0 +1,104 @@
+
+
+一. 项目名称：FTP文件传输
+
+二.项目功能：
+			 实现多用户登录服务器
+			，并且可以实现(ls cd mkdir get put pwd quit等命令）
+
+三. 思路：
+
+1 .服务器以守护进程模式启动和可见模式两种启动方式
+
+2 .客户端输入服务器ip申请连接，服务器接受连接；连接失败服务器返回，客户端exit；连接成功继续。
+
+3 .客户端输入用户信息并发送倒服务器端，
+  服务器验证用户信息，成功给客户端发送成功标识，
+建立私有管道，并将客户端信息和管道信息添加用户链表，
+fork专用进程给客户端并切换到用户家目录；失败返回失败标识，客户端exit
+
+4 .服务器等待发送命令，客户端等待接受用户输入命令并发送给服务器(ls cd mkdir get put pwd quit),
+
+5 .服务器解析命令并执行，将所需数据发送给客户端。
+当服务器端收到quit命令时，客户专用子进程结束，私有管道删除，服务器主进程收尸，写入log文件，
+删除用户链表里的此用户信息，客户端exit
+
+四. 分工：
+
+客户端： 胡鑫  祁路方
+服务器： 陆剑  陈宇鸣
+
+五 结构体
+
+/*********客户端**********/
+
+//用户信息结构体
+struct user_msg{
+		char username[50];
+		char passwd[50];
+};
+
+//命令枚举
+enum cli_cmd{
+
+		ERR,
+		LOGIN,
+		LS,
+		PUT,
+		PUT_CONT,
+		PUT_OVER,
+		GET,
+		GET_CONT,
+		GET_OVER,
+		CD,
+		PWD,
+		MKDIR,
+		QUIT,
+		OVER,
+};
+
+//客户端命令参数共用体
+union cli_argv{
+		char file_get[50];
+		char file_put[50];
+		char path_cd[50];
+		char path_mkdir[50];
+		char path_ls[50];
+};
+
+//客户端发给服务器的结构体
+struct cli_ser_pakg{
+		char cmd;	
+		struct user_msg cli_info;
+		union cli_argv argv;
+};
+
+/***********服务器*************/
+
+//服务器处理的结构体
+struct ser_recv{
+		struct cli_ser_pakg recv_data; 
+		struct sockaddr_in cli_ip;
+};
+
+//服务器用户链表保存的结构体
+struct list_info{
+		struct user_msg user_info;
+		struct sockaddr_in cli_ip;
+		char fifo_name[1024];
+		//	time_t time;
+};
+
+//服务器发送给客户端的数据buf
+union ser_cli_pakg{
+		char file_buf[1024];
+		char cmd_buf[1024];
+};
+
+//服务器发给客户端的包
+struct send_pakg{
+		char pakg_type;
+		union ser_cli_pakg data_buf;
+};
+
+

@@ -1,0 +1,23 @@
+#include<stdio.h> 
+
+int main()
+{
+	char arr[100];
+	int nu=0,bit=0,
+	printf("请输入字符串\n");
+	for(;;nu++)
+	{	
+		if(arr[nu]=='\n')
+			break;
+		scanf("%c",arr[bit]);
+		if(arr[nu]=='#')
+			for()
+			{
+				scanf("%c",arr[nu]);
+				if(arr[nu]=='#')	
+					break;
+			}
+		nu--;
+	}
+	printf("%s",arr);
+}

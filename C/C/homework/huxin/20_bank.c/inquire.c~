@@ -1,0 +1,5 @@
+void inquire()
+{
+	printf("Your current balance is $9999\n");
+
+}

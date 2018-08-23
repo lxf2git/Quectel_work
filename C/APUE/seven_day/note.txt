@@ -1,0 +1,69 @@
+killpg
+kill
+kill(int pid,int signo)
+ getpgrp setpgid getpgid fork getpid getppid getgid setgid 
+setsid  getsid system exec
+进程 僵尸进程 孤儿进程
+进程间通信
+信号 管道 信号量 消息队列 socket。。。
+
+信号  man 7 signal
+wait-waitpid
+
+SIGKILL 9  必杀信号
+SIGSTOP  停止信号 进程立即停止 不会结束
+SIGCONT 继续信号 系统会让停止的进程继续执行
+SIGINT ctrl+c 发出的信号 默认终止进程
+SIGQUIT CTRL+\ 发出的信号 默认终止进程 产生内存映像文件
+SIGTSTP CTRL+Z  发出的信号 默认停止进程
+SIGTERM  kill命令默认发送的信号
+SIGCHLD 子进程结束或停止的信号 默认时忽略
+SIGALRM 闹钟信号 alarm定时时间到了 系统会发出的信号 默认终止进程
+ 
+kill -l
+typedef void (*sighandler_t)(int);
+
+sighandler_t signal(int signum, sighandler_t handler);
+signal(信号，func);//  void func(int)
+SIG_IGN 忽略  
+SIG_DFL 默认
+
+SIGKILL SIGSTOP 不能自己处理
+
+kill -信号 进程id 发送信号给指定进程
+
+
+unsigned int alarm(unsigned int seconds);
+功能：定时 指定秒数后 系统向进程发送SIGALRM信号
+alarm 本身不等待
+seconds 秒数
+返回：返回上次闹钟剩余时间
+
+练习：写个小程序 测试打字速度
+
+
+int pause(void);
+int kill(pid_t pid, int sig);
+向指定进程（pid）发送信号sig
+pid 0 表示向本组所有进程发信号
+sig 0 不发信号 但检测进程id是否存在
+
+返回：成功返回0 失败返回-1
+
+
+
+作业：
+1、实现 kill -signo pid  kill()  man atoi itoa
+2、编写daemon进程 实现：
+当监测到SIGHUP信号时 该进程获得系统运行时间(/proc/uptime文件 第一列为系统启动到现在的时间 第二列为系统空闲时间) 将其追加写入到日志文件  检测到SIGUSR1信号时 后台进程退出
+
+
+
+
+
+
+
+
+
+
+

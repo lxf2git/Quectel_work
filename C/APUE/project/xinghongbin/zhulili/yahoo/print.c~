@@ -1,0 +1,28 @@
+#include"print.h"
+
+void printA(pNode pHeadA)
+{
+	pNode ptmp = NULL;
+	for(ptmp=pHeadA->next;ptmp!=pHeadA;ptmp=ptmp->next)
+	{
+		printf("dataA:%d\n",ptmp->data);
+	}
+	printf("\n");
+}
+
+void printB(pNode pHeadB)
+{
+	pNode ptmp;
+	for(ptmp=pHeadB->next;ptmp!=pHeadB;ptmp=ptmp->next)  //双循环链表输出的循环条件是不等于头，不能不等于空，等于空无线循环
+	{
+		printf("dataB:%d\n",ptmp->data);
+	}
+	printf("\n");
+}
+
+void pPrint(pNode pHeadA,pNode pHeadB)
+{
+	printA(pHeadA);
+	printB(pHeadB);
+	
+}

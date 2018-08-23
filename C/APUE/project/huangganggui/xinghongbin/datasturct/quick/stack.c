@@ -1,0 +1,64 @@
+#include"stack.h"
+/*
+int main()
+{
+		int data=1;
+		int a;
+		pSta p;
+		stack_init(&p);
+		push(p,data);
+		pop(p,&a);
+		printf("%d\n",a);
+}
+*/
+void get_memory(void **p,int size)
+{
+		*p = malloc(size);
+}
+
+void node_init(pNode *p)
+{
+		get_memory((void**)p,sizeof(sNode));
+		(*p)->next = (*p);
+		(*p)->prev = (*p);
+
+}
+void stack_init(pSta *p)
+{
+		get_memory((void**)p,sizeof(sSta));
+		node_init(&((*p)->bottom) );
+		(*p)->top = (*p)->bottom;
+}
+int push(pSta p,int data)
+{
+		pNode pnew;
+		node_init(&pnew);
+//		p->top = p->bottom->prev;
+		pnew->data = data;
+		pnew->next = p->top->next;
+		pnew->prev = p->top;
+		p->top->next->prev = pnew;
+		p->top->next = pnew;
+		p->top = pnew;
+		return 0;
+}
+int pop(pSta p,int *data)
+{
+		pNode pDel;
+		if(p->bottom->next == p->bottom)
+		{
+				printf("stack is empty\n");
+				return -1;
+		}
+		*data= p->top->data;
+		pDel = p->top;
+		p->top->prev->next = p->top->next;
+		p->top->next->prev = p->top->prev;
+		p->top = p->top->prev;;
+		if(pDel != NULL)
+		{
+				free(pDel);
+				pDel = NULL;
+		}
+		return 0;
+}

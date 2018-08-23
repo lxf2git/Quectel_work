@@ -1,0 +1,11 @@
+#include"wei_shu.h"
+int suan_wei (long nu)
+{
+		int wei;
+		nu=nu/10;
+		if(nu==0)
+			break;
+		else
+			wei++;
+		return wei;
+}

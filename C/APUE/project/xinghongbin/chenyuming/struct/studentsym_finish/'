@@ -1,0 +1,86 @@
+#ifndef _STUSYS_H_
+#define _STUSYS_H_
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+#define FAIL 0
+#define SUCCESS 1
+#define FIND 1
+#define NOFIND 0
+#define EXIST 1
+
+typedef struct student
+{
+	unsigned int num;
+	int age;
+	struct student *next;
+	void (*pStu_print)(struct student *);
+	void (*pStu_input)(struct student *);
+}sStu, *pStu;
+
+
+typedef struct list
+{
+	pStu head;
+
+	const int (*pIDFind)(pStu pHead, unsigned int num);
+	const pStu (*pInsertPosition)(pStu pHead, pStu InsertNode);
+	const int (*pInsert)(struct list *pStusys);
+
+	const pStu (*pDelPosition)(pStu pHead, unsigned int num);
+	const int (*pDel)(struct list *pStusys);
+	
+	const void (*pPrint)(pStu pHead);
+	
+	const int (*pFun_search[2])(pStu pHead);
+	const void (*pSearch)(struct list *pStusys);
+
+	//	int (*pSave)(pStu pHead, FILE*fd);
+
+	const void (*pFree)(struct list *pStusys);
+
+}sList, *pList;
+
+
+#if 0
+typedef int (*pIDFind)(pStu, pStu);
+typedef pStu (*pInsertPosition)(pStu, pStu);
+typedef int (*pInsert)(pStu, pIDFind, pInsertPosition);
+
+typedef pStu  (*pDelPosition)(pStu, unsigned int);
+typedef int  (*pDel)(pStu, pDelPosition);
+
+typedef void (*pPrint)(pStu);
+
+typedef pStu (*pFun_search)(pStu, unsigned int);
+typedef void (*pSearch)(pStu,pFun_search[2]);
+#endif
+
+void get_memory(void **, void **);
+int create_memory(void **, unsigned int);
+void init(pList);
+
+int interface();
+
+void Stu_input(pStu);
+void Stu_print(pStu);
+
+int IDFind(pStu, unsigned int);
+pStu InsertPosition(pStu, pStu);
+int Insert(pList);
+
+
+int Del(pList);
+pStu DelPosition(pStu, unsigned int);
+
+void Print(pStu);
+
+int num_search(pStu);
+int age_search(pStu);
+void Search(pList);
+
+void Free(pList);
+#endif

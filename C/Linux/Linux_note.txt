@@ -1,0 +1,883 @@
+                                                	Everything is a file
+linux 目录结构
+/ 根目录
+/home linux系统上各普通用户的家目录 子目录名称以该用户名命名
+/root root用户的家目录
+/bin 二进制文件 所有用户都可以执行（常用的命令文件）
+/sbin 系统管理员所使用的命令文件
+/dev 设备文件
+/etc 配置文件
+ /etc/rc.d 启动或改变运行级别时运行的脚本或脚本目录
+ /etc/passwd 用户名加密口令等
+ /etc/inittab  init配置文件
+ /etc/fstab 启动时 自动mount
+
+/lib 库文件
+/mnt 为某些设备 挂载提供默认挂载目录
+/media为光盘 软盘 U盘提供默认挂载目录
+/proc 虚拟文件系统 用于提供系统的相关信息
+/boot linux系统内核文件和引导装载程序文件
+/opt 某些第三方应用程序的安装文件
+/var 存放经常变化的数据 如：系统日志 数据库文件等
+/usr 存放不经常变化的数据（应用程序 帮助文档）
+
+终端：
+1 图形终端 F1/F7
+5 文本终端 
+从图形终端切换到文本终端： ctrl-alt   F2~F6
+从文本终端切换到图形终端：alt+F1/F7
+
+打开终端：
+快捷键：系统-首选项-键盘快捷键-run terminal-
+关闭：ctrl+shift+q
+
+Alt+F2  ---gnome-terminal
+
+打开标签：
+ctrl+shift+t
+关闭标签
+ctrl+shit+w
+
+linux命令的写法
+命令 选项 参数
+选项形式：
+（1）以-开头
+   ls -l
+    ls -a
+    ls -al
+(2)以--开头
+（3）命令和路径 可以用TAB补全 连按2次 显示目录下所有
+注意：命令 选项 参数 每两个之间一定要有空格分隔
+
+获取帮助
+man  linux system 手册
+man -a man
+       1      User Commands  普通命令
+
+       2      System Calls  系统调用
+
+       3      C Library Functions 库函数
+
+       4      Devices and Special Files 特殊文件
+
+       5      File Formats and Conventions 文件格式
+
+		man 5 passwd
+
+       6      Games et. Al. 游戏
+
+       7      Miscellanea 杂项
+       8      System  Administration  tools   and
+              Deamons  系统管理员用到的命令
+
+查找  /关键字   n向下查找  N向上查找 退出q
+
+help
+内部命令：
+外部命令：通过安装软件包安装到系统的命令
+help+内部命令
+help cd
+
+外部命令+ --help
+ls --help
+
+info
+info ls
+空格向下翻页 q退出
+
+whatis 查看命令用途
+whatis ls
+makewhatis 生成whatis 数据库（需要时间）
+
+pwd 我在哪（当前路径）
+whoami 我是谁（当前登录系统所使用的帐号）
+
+cd 切换路径
+绝对路径 以根（/）为起点
+相对路径 以当前目录为起点
+
+cd
+cd .. 上一级路径
+   .   当前路径
+   -   上次位置
+ctrl+l 清屏
+ctrl+c 取消命令
+
+ls 查看
+-l 长格式显示（等价于ll）
+-a 显示隐藏文件
+-A  显示隐藏文件（不显示 .  ..）
+-i   打印i结点编号
+-R 递归显示
+
+ls -l
+drwxrwxrwx   4    root   root 4096 Jul 20  2015 book
+文件类型权限 子目录/链接 所有者 所属组 大小(byte)
+
+drwxrwxrwx 
+文件类型：
+- 普通文件
+d 目录文件
+l 链接文件
+c 字符设备 只能以字节为最小单位访问 
+b 块设备  以块为单位访问 512  1024
+s 套接字文件
+p 管道文件
+
+权限位：
+前三位：所有者权限  u
+中间三位：所属组    g
+最后三位：其他人    o
+
+修改权限：
+chmod 权限 name
+
+chmod 777 book
+chmod 644 book 
+
+chmod u+w book
+a=u+g+o
+chmod a+x tmp
+chmod a-r tmp
+
+进制转换
+(10011101)2---》1*2^0+0*2^1+1*2^2....=
+(5432657)8---->7*8^0+5*8^1+6*8^2...=
+(B42C9)16----->9*16^0+c*16^1+2*16^2...=
+
+11 010 111 001 101->8进制 32715 
+11 0101 1100 1101->16进制  35cd
+
+默认运行级别：通过vim /etc/inittab
+linux系统启动级别：0-6
+0：关机
+1：单用户模式 只有root能进
+3 完全文本模式 企业中用
+5 图形界面
+6 重启
+init 6（reboot） 重启
+shutdown -h now 立刻关机
+shutdown -h 10
+shutdown -r now  立刻重启
+shutdown -r 10  
+
+hostname name  临时修改主机名
+修改主机名：
+a.vim /etc/sysconfig/network
+b.按 a   HOSTNAME修改
+c.按ESC
+d. shift ：
+e. wq！ 保存退出
+
+添加用户
+useradd doudou
+su doudou
+exit
+
+userdel doudou //不删除用户的家目录
+userdel -r 干净删除用户
+
+给用户设置密码：
+passwd 默认修改当前用户密码
+超级用户：既可以修改自己密码 又可以修改别人的密码 不需要提供当前密码
+普通用户：只能修改自己的密码 并需要提供当前密码
+
+练习：创建4个用户 然后为4个用户设置密码 切换到文本F2~F6 尝试登录系统
+
+*********************************************
+文件管理
+  文件查看：
+	1 cat 一般用于查看短小的文件
+		cat /etc/passwd
+	   查看文件时 显示行号
+          cat -n /etc/passwd
+	2 more 分页查看文件
+	   more /etc/passwd
+          enter:向下翻一行 b：向上翻页
+	  space：向下翻一页  q：退出
+       3 less 可以实现分页 并支持搜索 上下翻
+          enter或向下箭头：向下翻一行
+	  向上箭头：向上翻一行wc -l
+          space或pagedown：向下翻一页
+	  pageup：向上翻一页 
+	查找 搜索
+	/关键字   n N
+	
+	4 head 查看文件的开头部分
+          head /etc/passwd  默认显示前10行
+	  head -2 /etc/passwd 显示前2行
+
+        5 tail 查看文件的末尾部分
+	tail /etc/passwd  默认显示后10行
+	 tail -2 /etc/passwd 显示后2行
+	
+	tail -f 动态查看文件内容
+	> 输出重定向
+	ping 192.168.1.10 > ping.txt
+	tail -f ping.txt
+
+   文件操作：
+	创建：
+	touch 文件名
+	如果文件不存在 创建一个空白文件；如果文件已经存在
+	则修改文件的时间戳
+	
+	vim 文件名
+	如果文件不存在 创建一个文件；如果文件已经存在 则打开
+	
+	拷贝：
+	cp 源 目的
+	touch f1
+	cp f1 /home  //只拷贝
+	cd /home
+	ls
+	cp f1 /home
+	提示：文件是否覆盖（文件已经存在）		
+	
+	touch f2
+	echo happy > f2
+	cp f2 /home/f3  //拷贝同时重命名
+	
+	移动 剪切
+	mv 源 目的
+	touch f4
+	echo hungry > f4
+	mv f4 /home        //移动	
+	mv /home/f4 .
+	mv f4 /home/f5    //移动同时重命名
+ 
+	删除：
+	rm f5 //提示信息
+        rm -f  //强制删除 不提示信息
+
+   目录操作：
+	创建目录：
+	mkdir
+	mkdir /test 
+	-p 创建多级目录
+	mkdir -p /test/a/b/c/d 
+	
+	删除目录：
+	rmdir
+	rmdir  /test/a/b/c/d 默认删除空目录
+	rm -rf /test   强制删除
+
+	目录剪切
+	mv
+	mv /test/1 /root/ex
+	mv /test  /root/ex/test1 //移动并重命名
+	
+	拷贝目录
+	cp  -r
+	cp -r a /  拷贝
+	cp -r f1 test-new
+	cp -r test-new /testtest //拷贝并重命名
+ 
+练习：
+	1、在tmp目录下创建happy目录
+	2、拷贝/etc/passwd到happy
+	3、将happy拷贝到根目录下
+	4、将/tmp下的happy剪切到/test下同时重命名为sad
+	5、删除test下的sad
+	6、创建/test/dir1，/test/dir2,/test/dir3 
+	  共3个目录
+	7、将dir1目录拷贝到dir3目录下 同时重命名为dir4
+  权限：
+umask ：决定一个用户创建的文件或者目录的默认权限
+#umask 
+0022
+$umask
+0002
+默认情况下：
+目录最大权限：777
+文件最大权限：666
+文件的默认权限：文件的最大权限-umask
+目录的默认权限：目录的最大权限-umask
+
+计算：当umask为0003和0020的时候 的用户创建的文件或目录的默认权限
+umask 0003  
+文件默认权限：663
+目录的默认权限：774
+umask  0020
+文件：646
+目录：757
+
+RPM：redhat package manager 红帽包管理器
+rpm -ivh AdobeReader_chs-8.1.2-1.i486.rpm 
+i install 安装
+v verbose 显示安装过程
+h：以人类可读的方式显示
+
+rpm -e 卸载
+rpm -q 短名 查询软件包是否安装
+rpm -qa 查询系统中所有已经安装的软件包有哪些
+rpm -qa|grep vsftpd
+rpm -qa|wc -l
+wc word count 计数命令
+-l 统计行数
+-c 统计字节数
+-w 统计单词数
+
+rpm -qf 文件的绝对路径或者文件 查询某个文件是由哪个软件包安装的
+rpm -qf `which vim` //查询vim命令由哪个软件包安装的
+rpm -qc  查询软件的配置文件
+rpm -qc httpd
+
+忘记root密码 如何进入系统？
+ 进入单用户模式
+ 重启系统-系统倒计时页面 -回车-e-第二行-e 输入空格 再输入1
+-回车-按b-passwd-reboot
+
+挂载
+mount 参数 设备名称 挂载点
+-t 指定设备的文件系统类型
+-o 指定挂载文件系统时的选项（ro rw）
+fdisk -l //查看u盘设备号 /dev/sdb1
+mkdir /media/usb
+mount /dev/sdb1 /media/usb
+umount /dev/sdb1  
+
+   挂载镜像：
+	mkdir /mnt/cdrom
+	mount -o loop -t iso9660 ./rhel-server-6.4-i386-dvd.iso /mnt/cdrom
+
+yum配置：
+vim /etc/yum.repos.d/my.repo
+[my]  //容器名字
+name=doudou //留给自己看的名字
+baseurl=file:///mnt/cdrom  //yum服务器提供安装包的位置
+enabled=1  //表示该段配置可用
+gpgcheck=0  //不对软件进行数字签名验证
+ese-：-wq-回车
+yum list 
+yum install kdegraphics-4.3.4-6.el6.i686
+ yum install vsftpd
+
+**********************************
+第三天
+vim(vi)
+三种工作模式：
+命令行模式：控制屏幕光标移动，字符删除移动 进入别的模式
+插入模式：只有在这个模式 才可以做文字输入 ESC回到命令模式
+末行模式：将文件保存或者退出vi编辑器 也可以设置编辑环境(列出行号)
+
+命令行模式进入插入模式：
+i:从光标当前位置前开始输入文本
+I:从光标所在行的行首插入
+o：在光标所在行下面插入一行 从行首开始输入
+O：在光标所在行上面插入一行。。。
+a：在当前光标位置的下一个位置开始输入
+A：在光标所在行的行末输入
+s：删除光标位置一个字符 然后再进入插入模式
+S：删除光标所在行 然后进入插入模式
+
+插入模式进入命令行模式：
+ESC
+
+命令行进入末行模式：
+shift ：
+退回 ESC
+
+退出末行模式：wq！
+
+移动光标：
+（命令行模式）
+ctrl+f 屏幕向后移动一页
+ctrl+b 屏幕向前移动一页
+ctrl+d 向后移动半页
+ctrl+u 向前移动半页
+光标跳到某行：末行模式输入行号
+光标跳到最后一行：末行模式输入$
+
+删除：
+dd：删除光标所在行（命令行模式）
+ndd：删除n行
+x：删除光标所在位置的一个字符
+nx：删除光标所在位置开始的n个字符
+
+复制：
+yy：复制光标所在行
+nyy：复制n行
+p：粘贴到光标所在行的下一行
+s
+替换：
+：s/bin/haha/  替换光标所在行第一个被匹配到的bin为haha
+：s/bin/hello/g  g：global全局的 将光标所在行匹配到的所有
+bin替换为hello
+：%s/nologin/login/g  % 全篇替换
+：1,10s/bin/doudou/g 将1到10行所有的bin替换成doudou
+：11,$s/bin/baby/g  将11到最后行所有的bin替换成baby
+
+搜索（末行）：
+/关键字 n N 
+
+撤销：
+u：取消最近一次操作
+U：取消对当前行进行的所有操作
+
+末行模式：
+：set nu  列出文件每行行号
+：set nonu 取消每行行号
+：set hlsearch  打开高亮
+：set nohlsearch 取消高亮
+：r /etc/passwd 导入另一个文件的内容
+：8，10w newfile  将8～10行保存到其他文件
+：11,13 >> newfile  将11～13行追加到其他文件中
+
+
+vim /etc/vimrc 
+set nu 显示行号
+set ts=4 TAB
+set cindent 自动缩进
+
+练习：
+ 1 备份/etc/passwd 文件到/tmp目录下
+ 2 操作/tmp/passwd 文件：
+ a、复制文件中从第5行开始的4行内容 将其粘贴到最后一行
+ b、删除文件的第16行
+ c、删除文件的前10行
+ d、将剩余文件的第5行剪切到第10行下面
+ e、将剩余的第5行到第8行中的全部s替换为SS
+ f、复制文件的全部内容粘贴到文件的最后一行下面
+
+IPV4 分为两部分：网络标识和主机标识
+网络标识：表明具体网段
+主机标识：网络中特定的计算机号码
+0011
+1001  &
+————————
+0001
+
+
+0011
+1111       &
+————————
+都为1才为1 否则为0
+
+192.168.1.200
+255.255.255.0  &
+
+192.168.1.0
+
+127.0.0.1 本地回环地址
+0.0.0.0 任何网络
+255.255.255.255
+
+修改ip地址：
+	ifconfig
+	ifconfig eth0 down/up
+	ifconfig eth0 192.168.1.250
+	ifconfig
+
+	setup
+
+	service network restart 网络重启 红帽专用
+	 /etc/init.d/network restart 所有linux
+	修改配置文件：
+vim /etc/sysconfig/network-scripts/ifcfg-eth0
+	
+	DEVICE=eth0 //设备名字
+	BOOTPROTO=none
+	HWADDR=00:0b:2f:6e:b2:85 //硬件地址
+	IPV6INIT=yes
+	MTU=1500
+	NM_CONTROLLED=yes
+	ONBOOT=yes   //让网卡开机自动激活
+	TYPE=Ethernet //网卡类型 以太网卡
+	UUID="689ad692-e205-4e9e-ba5c-6a9fb39cad73"
+	IPADDR=192.168.1.200
+	NETMASK=255.255.255.0
+	USERCTL=no
+	DNS1=8.8.8.8
+
+    ping 测试网络连通性
+
+
+防火墙：
+  关闭：
+	1 setup
+	2 即时生效 重启失效
+	 service iptables stop
+	 service iptables start
+	3 永久生效
+	 chkconfig iptables off
+	 chkconfig iptables on	
+
+禁用 selinux
+	临时：
+	setenforce 0  
+	永久：
+	vim /etc/selinux/config
+	SELINUX=disabled
+ssh服务
+远程登录：
+	ssh 192.168.1.45 //不指定用户时 默认使用当前用户连接
+	退出远程登录 
+	exit
+
+	指定用户身份登录
+	(对方主机)
+	useradd test
+	passwd test
+	ssh test@192.168.1.45
+
+	关闭ssh服务：	
+	/etc/init.d/sshd stop
+	启动：
+	/etc/init.d/sshd start
+
+远程拷贝：
+scp 选项 源 目的
+  将本地资源拷贝给远程主机
+   scp ./osi.ppt  192.168.1.45:/home
+
+  将远程主机的文件拷贝到本地
+  scp 192.168.1.10:/home/osi.ppt /home/book
+  拷贝目录：  scp -r		
+  scp -r book 192.168.1.10:/home  
+
+nfs服务 network file system 网络文件系统
+优点：局域网共享中速度最快的
+缺点：默认不支持跨平台
+服务器端：
+	rpm -qa | grep nfs
+	yum install nfs-*
+	配置共享文件：
+		vim /etc/exports
+		/home *(rw)
+	启动服务：
+		/etc/init.d/nfs restart
+
+
+客户端：
+	mount -t nfs 192.168.1.200:/home /mnt
+	cd /mnt
+
+作业：
+1 在home下创建目录myfriend 将为你认识的5个人 给每个人创建个目录 且在这些目录中 有三个权限为：所有者具有全部权限 同组只读权限 其他用户没有任何权限 最后将个5个，目录删除干净
+
+2 / 复制/home到/newdir中 将/newdir/other/p1命名为passwd
+ 
+3 进入/tmp目录 建立文件夹dir1/dir2/dir3
+	拷贝/root/install.log 3到dir3中 
+	拷贝/root/install.log到dir2并命名为file.log
+	在dir3中创建文件test 剪切文件test到dir1中
+	删除目录dir1 dir2 dir3
+4 在/tmp下创建一个子目录为shared
+	在根目录下创建一个目录为shared1
+	在shared1下创建9个子目录a1～a9
+	在a5内创建file1～file3
+	在shared内创建两个目录boy和girl
+	把shared目录更名为public
+	拷贝/etc/inittab文件到boy内
+	移动shared1目录到public 删除a1-a4 a6-a9
+	将a5改为inp 并移动到girl内
+	删除shared1
+***********************************************
+第4天
+/etc/passwd 保存用户信息
+ kitty:x:504:506::/home/kitty:/bin/bash
+用户名：密码：用户id：组id：描述信息：家目录：命令解析程序(shell)
+
+/etc/shadow 保存用户密码相关信息的文件
+kitty:$6$h24ECs8A$fFY08qjDoZMrNR/Pq50GTn0CtWn7EmA    vdG1uVknPCpeDJ.CiauRKPne8AcvmI6553TKGOjKYWUg/iW1.    Owaz3/:16597:0:99999:7:::
+用户名：加密后的密码：
+上次密码修改的时间 距离1970年1月1日
+密码最小的生存周期 0 随时可以修改
+密码最大的生存周期
+密码到期前几天开始警告
+
+打包：
+压缩：
+zip：
+压缩后的文件一般以.zip结尾
+压缩语法：  zip 压缩后的文件名 待压缩的文件
+	zip rhel.zip rhel-server-6.4-i386-dvd.iso 
+解压缩：unzip
+	unzip 已经压缩的文件名 
+	-d 指定解压路径
+	unzip -d /home rhel.zip 
+gzip压缩
+	默认后缀名 .gz
+	gzip file.txt
+	gzip压缩时 原文件消失 生成压缩文件
+
+解压：gunzip 
+    gunzip file.txt.gz
+
+bzip2
+压缩：
+bzip2 file.txt
+解压：
+bunzip2 file.txt.bz2
+
+tar
+ c：创建一个tarball
+ x:解开一个tarball
+ v：显示打包或解包过程
+ f：指定包名
+ z:将包压缩为.gz格式
+ j：将包压缩为.bz2格式
+ C：解包时 指定存放文件路径
+
+打包：
+tar cvf file_new.tar file.txt file1.txt
+tar cvf /home/file.tar file1.txt file.txt
+
+压缩：
+tar zcvf file.tar.gz file.txt file1.txt
+tar jcvf file.tar.bz2 file.txt file1.txt
+
+解压缩：
+tar xvf file.tar.gz  //解压到当前路径下
+tar xvf file.tar.gz -C /home  //指定解压到/home下
+
+文件搜索：
+	which ：查找命令的绝对路径  which vim
+	whereis：查找命令的绝对路径 对应man手册的位置及源代码包位置
+		  whereis ls
+	locate : 通过文件名检索文件 速度最快
+		locate httpd.conf
+	find  路径 条件（选项） 动作
+	find / -name list.h
+
+程序猿
+程序员的那些事
+伯乐在线
+程序员之家
+
+csdn
+c  c语言中文网
+linux公社
+51cto
+
+QQ：251206051
+
+进程：
+	运行着的程序
+	ps -aux  显示系统中所有运行的进程
+	USER：进程的用户
+	PID：进程id号
+	STAT：进程运行状态
+
+	S：sleep 休眠状态
+	R：running 运行状态
+	s：包含子进程
+	+：位于前台的进程组
+	<:高优先级
+	N：低优先级
+	l：多线程
+	D：守护进程
+	Z：僵尸进程
+	kill -l 显示信号列表
+	kill 信号 pid
+	jobs 查看后台运行的进程
+	&  将进程后台运行
+	ctrl+z 将前台运行的进程 扔到后台去 此时进程为停止状态
+
+	[1]+  Running                 ./exe &
+	[2]+  Stopped                 ./exe
+
+	fg 作业号 将后台进程调到前台运行
+bg 作业号  让后台停止的进程在后台运行
+
+重定向：
+	输出重定向：将command命令的输出保存到文件file中
+	如果file不存在 则创建 已存在则覆盖原有内容
+	command > file
+	cat file1.txt > file3
+	
+	输入重定向：将文件file的内容作为command的输入
+	command < file
+	
+	touch file
+	touch file4.txt
+	echo yes > file4.txt
+	rm file < file4.txt
+	//file被删除
+
+	错误输出重定向：将command命令执行的出错信息输出到file
+	command 2> file 
+	cat 3.c 2> file5  //3.c 不存在
+	cat file5
+	cat: 3.c: No such file or directory
+
+	追加重定向：将command命令执行的输出添加到已经存在的文件中
+	command >> file
+
+ 	echo class over! >> file4
+	cat file4
+	yes
+	class over!
+链接：
+硬链接：ln 原文件 链接文件--备份
+	ln note.txt txt
+
+软链接：ln 原文件 链接文件--快捷方式
+	ln -s note.txt txt
+
+作业：
+1、创建目录/test 拷贝/etc/inittab 到test下
+	将其中的第23行到29行复制并粘贴到文件最末尾
+	
+	定位到第35行 光标跳到行尾 添加"ww.brother.com.cn"
+	然后复制此行到第40行后
+
+	删除文件中的第一行到第二十行
+	将第25行的respawn替换为sssssss
+	统计这个文件中的行数及字符数
+
+	创建文件test2 在此文本文件中写入相关个人信息
+	并将其与根目录下的文件test 打包（.tar格式）放到home下
+	将包属性设置为所属用户可读写执行 其他人无任何权限
+	
+	将此包发给远程一台机器的根目录下 然后删除
+	任何人收到包后 在自己的home下解压 查看内容 并在文件内
+	填写自己的个人信息发回去。。。。
+
+2.
+ 在/下建立目录 worker，在 worker 下建立目录 host01，host02 在 host01
+下建立目录 h01， h02 
+24）删除 host01 下的 h01 目录，若 host01 目录为空，则删除 host01 
+25）在 host02 下建立文件 baby.txt 
+26)长格式显示/etc 下的文件 
+27）将/etc/yp.conf 复制到/worker/host02 中，提示用户是否覆盖 
+28）复制/etc/yp.conf 复制到/worker/host02 中改名为 tt20912.conf 
+29)将/mnt 下的所以文件及目录复制到/worker/host02 下 
+30）在在 worker 下建立目录 host03，将 host02 中的所有文件移到 host03
+下，如文件存在不 给出任何覆盖提示 
+31）将 host03 下的所有文件删除，用户需对删除的文件进行确认 
+32）删除 host03 下的所有目录 
+34）尝试给/worker/host02/yp.conf 建立一个硬链接到/man.hard 
+35) 尝试给/worker/host02/yp.conf 建立一个软链接到/soft.soft 
+36)在/下建立目录 test20912，在 test20912 建立文件 1.txt 和 2.txt，分别在文件
+1.txt 和 2.txt 中输入“I am chinese”“are you ok？”用 cat 命令查看其中的内容，将1.txt 和 2.txt 中的内容合并到 3.txt 并加上行号 
+37）从第 5 行起显示/worker/host02/yp.conf 38）显示 /worker/host02/yp.conf
+前五行内容 39）显示/worker/host02/yp.conf 后五行内容 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+	
+	
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                              

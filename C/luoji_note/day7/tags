@@ -1,0 +1,30 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ADCCON	include/adc.h	5;"	d
+ADCDAT	include/adc.h	7;"	d
+ADCDLY	include/adc.h	6;"	d
+ADCMUX	include/adc.h	8;"	d
+BITS	include/common.h	6;"	d
+CLEAR_BIT	include/common.h	8;"	d
+END	include/common.h	/^		END,$/;"	e	enum:adc_st::__anon1
+GET_BIT	include/common.h	9;"	d
+PROCESS	include/common.h	/^		PROCESS,$/;"	e	enum:adc_st::__anon1
+SET_BIT	include/common.h	7;"	d
+Ttext	Makefile	/^	arm-linux-ld  start.o main.o adc_init.o adc_start.o adc_end.o adc_get.o  -o adc -Ttext=70003000$/;"	m
+_ADC_H	include/adc.h	3;"	d
+_COMMON_H	include/common.h	3;"	d
+_DELAY_H	include/delay.h	2;"	d
+_start	start.s	/^_start:$/;"	l
+adc_end	adc_end.c	/^int adc_end()$/;"	f
+adc_get	adc_get.c	/^int adc_get()$/;"	f
+adc_init	adc_init.c	/^int adc_init(void)$/;"	f
+adc_st	include/common.h	/^struct adc_st$/;"	s
+adc_start	adc_start.c	/^int adc_start()$/;"	f
+delay	include/delay.h	/^static void delay(const int ms)$/;"	f
+end_state	include/common.h	/^	}end_state;$/;"	m	struct:adc_st	typeref:enum:adc_st::__anon1
+main	main.c	/^int main() $/;"	f
+printf	include/common.h	5;"	d

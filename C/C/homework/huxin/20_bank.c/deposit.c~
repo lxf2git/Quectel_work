@@ -1,0 +1,7 @@
+void deposit()
+{ 
+ 	int a;
+	printf("please input your money \n ");
+	scanf("%d",&a);
+	printf("you deposit money is $%d\n",a);
+}

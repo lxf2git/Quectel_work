@@ -1,0 +1,109 @@
+#include"../apue.h"
+int main()
+{
+	struct sockaddr_in addr,conaddr;
+	
+	struct epoll_event eparr[10];
+	struct epoll_event event;
+	int ret,n,epfd,confd,listenfd,i;
+	char buf[30];
+	bzero(buf,sizeof(buf));
+	socklen_t len = sizeof(conaddr);
+	
+		
+	int sockfd = socket(AF_INET,SOCK_STREAM,0);	
+	if(sockfd<0)
+	{
+		show_err("socket");
+	}
+
+	bzero(&addr,sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(6111);
+	addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+	ret = bind(sockfd,(struct sockaddr*)&addr,sizeof(addr));
+	if(ret<0)
+	{
+		close(sockfd);	
+		show_err("bind");
+	}
+
+	listen(sockfd,5);
+
+
+	epfd = epoll_create(100);
+	if(epfd<0)
+	{
+		close(sockfd);
+		show_err("epoll_create");
+	}
+
+	event.events = EPOLLIN|EPOLLET;
+	event.data.fd = sockfd;
+	ret = epoll_ctl(epfd,EPOLL_CTL_ADD,sockfd,&event);
+	if(ret<0)
+	{
+		show_err("epoll_ctl");
+	}
+
+	while(1)
+	{
+		
+		n = epoll_wait(epfd,eparr,10,-1);//-1 不超时 一直得等
+		if(n<0)
+		{
+			close(sockfd);	
+			show_err("epoll_wait");
+		}
+		for(i=0;i<n;i++)
+		{
+			if(eparr[i].data.fd==sockfd)
+			{
+				puts("sockfd========");
+				bzero(&conaddr,sizeof(conaddr));
+				confd = accept(sockfd,(struct sockaddr*)&conaddr,&len);
+				if(confd<0)
+				{
+					close(sockfd);	
+					show_err("accept");
+				}
+
+				printf("%s 到此一游\n",inet_ntoa(conaddr.sin_addr));
+				
+				event.events = EPOLLIN|EPOLLET;
+				event.data.fd = confd;
+				printf("ac-confd:%d\n",confd);
+				ret = epoll_ctl(epfd,EPOLL_CTL_ADD,confd,&event);
+				if(ret<0)
+				{
+					show_err("confd-epoll_ctl");
+				}							
+			}
+			else if(eparr[i].data.fd!=-1)//confd
+			{
+				puts("confd==========");
+				listenfd = eparr[i].data.fd;
+				printf("listenfd:%d\n",listenfd);	
+				n = read(listenfd,buf,sizeof(buf));
+				if(n<=0)
+				{
+					close(listenfd);
+					eparr[i].data.fd =-1;
+					continue;
+				}
+				puts(buf);
+				write(listenfd,buf,n);
+			}
+
+
+		}
+
+
+
+	
+	}
+
+	return 0;
+
+}

@@ -1,0 +1,53 @@
+1秒=1000毫秒
+1毫秒=1000微妙
+
+int setitimer(int which, const struct itimerval *new_value,
+                     struct itimerval *old_value);
+struct itimerval {
+               struct timeval it_interval; /* next value */以后每隔多久来一次
+               struct timeval it_value;    /* current value */第一次多长时间到
+           };
+
+           struct timeval {
+               long tv_sec;                /* seconds */ 秒
+               long tv_usec;               /* microseconds */微妙
+           };
+which:定时器的类型
+ITIMER_REAL   系统的真实时间 时间到发送SIGLARM
+ITIMER_VIRTUAL  虚拟时钟 以该进程在用户态下花费时间来计算 时间到发送 SIGVTALRM
+ITIMER_PROF  以该进程在用户态和内核态下所话费的时间来计算（虚拟+内核） 时间到发SIGPROF 
+
+小练习：写两个程序
+一个用来等待用户输入数据 另一个程序读取数据
+
+ int unlink(const char *pathname);
+
+1-31 不可靠信号（非实时信号）  34-64 可靠信号（实时信号）
+
+信号集：多个信号集合
+
+ 	int sigemptyset(sigset_t *set);
+	清空信号集
+       int sigfillset(sigset_t *set);
+	将当前os中所有的信号添加到信号集
+       int sigaddset(sigset_t *set, int signum);
+	将一个信号添加到信号集
+       int sigdelset(sigset_t *set, int signum);
+	将一个信号从某信号集中删除
+       int sigismember(const sigset_t *set, int signum);
+	测试某个信号是否在信号集中
+信号屏蔽字
+int  sigprocmask(int  how, const sigset_t *set, sigset_t*oldset);
+how：
+	SIG_BLOCK    添加set到当前阻塞信号集里
+	SIG_UNBLOCK  取消对set里面信号的阻塞 
+	SIG_SETMASK 重新设置阻塞信号集为set
+oldset：保留原来阻塞的信号集 第一次调用oldset默认不屏蔽
+
+ int sigpending(sigset_t *set);
+取得处于未决状态的信号集
+
+
+
+
+

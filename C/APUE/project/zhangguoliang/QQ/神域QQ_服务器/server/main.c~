@@ -1,0 +1,36 @@
+#include "../include/apue.h"
+int confd[10],sockfd;
+socklen_t len;
+struct sockaddr_in conaddr;
+void *con_in()
+{
+		int i=0;
+		while(TRUE)
+		{
+			if((confd[i]=accept(sockfd,(struct sockaddr*)&conaddr,&len))==-1)
+			{
+					close(sockfd);
+					show_err("accept");
+			}
+			printf("%s is connected\n",inet_ntoa(conaddr.sin_addr));
+			i++;
+		}
+
+}
+int main()
+{
+	bzero(confd,sizeof(confd));
+	set_err(sockfd=socket(AF_INET,SOCK_STREAM,0),"socket");
+	struct sockaddr_in selfaddr;
+	len=sizeof(conaddr);
+	selfaddr.sin_family=AF_INET;
+	selfaddr.sin_addr.s_addr=htonl(INADDR_ANY);
+	selfaddr.sin_port=htons(PORT);
+	set_err(bind(sockfd,(struct sockaddr*)&selfaddr,len),"bind");
+	listen(sockfd,10);
+	pthread_t id;
+	pthread_create(&id,NULL,con_in,NULL);
+	while(1)sleep(20);
+	
+}
+

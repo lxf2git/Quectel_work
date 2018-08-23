@@ -1,0 +1,55 @@
+#include<stdio.h>
+#include<string.h> 
+int main()
+{
+	char first_list[100]={" "}, second_list[100]={" "},thired_list[128]={" "},recon_f,recon_s;
+	int i,n,s,times=0,size_f,size_s;
+	printf("请输入第一个字符串");
+	scanf("%s",first_list);
+	printf("请输入第二个字符串");
+	scanf("%s",second_list);
+	size_f=(int)strlen(first_list);
+	size_s=(int)strlen(second_list);
+	for(times;times<100;times++)
+	{
+		i=size_f-1;
+		for(;i>=1;i--)
+		{
+			if(first_list[i]<first_list[i-1])
+			{
+				recon_f=first_list[i];
+				first_list[i]=first_list[i-1];
+				first_list[i-1]=recon_f;
+			}
+		}
+		n=size_s-1;
+		for(;n>=1;n--)
+		{
+			if(second_list[n]<second_list[n-1])
+			{
+				recon_s=second_list[n];
+				second_list[n]=second_list[n-1];
+				second_list[n-1]=recon_s;
+			}
+		}
+	}
+	printf("第一个数列为%s\n第二个数列为%s\n",first_list,second_list);
+	i=size_f-1;n=size_s-1;
+	for(s=0;s<128;s++)
+	{
+		for(;i>=0;i--)
+		{
+			if(s=first_list[i])
+				thired_list[s]=first_list[i];
+		}
+		for(;n>=0;n--)
+		{
+			if(s=second_list[n])
+				thired_list[s]=second_list[n];
+		}
+	}
+	printf("综合为");
+	for(s=0;s<128;s++)
+	printf("%c",thired_list[s]);
+	printf("\n");
+}

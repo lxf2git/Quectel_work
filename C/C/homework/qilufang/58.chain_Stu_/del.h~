@@ -1,0 +1,8 @@
+#ifndef _DEL_H_
+#define _DEL_H_
+#include"total.h"
+#include"search.h"
+void del();
+int catch_1();
+
+#endif

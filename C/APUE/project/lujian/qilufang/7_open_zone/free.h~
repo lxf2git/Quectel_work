@@ -1,0 +1,6 @@
+#ifndef _FREE_H_
+#define _FREE_H_
+#include"total.h"
+void myfree(pMem pHead,pMem pHead_app,pRec pHead_rec);
+
+#endif

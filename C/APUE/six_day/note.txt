@@ -1,0 +1,37 @@
+进程组：多个进程的集合 组长id就是进程组id
+ int killpg(int pgrp, int sig);
+ int kill(pid_t pid, int sig);
+pid_t getpgrp(void);
+获取调用进程所在进程组的id
+
+pid_t getpgid(pid_t pid);
+获取指定进程所在进程组id 
+int setpgid(pid_t pid, pid_t pgid);
+setpgid(0,0) 创建新的进程组 并且创建进程的进程为该进程组组长
+pid!=pgid  将pid表示的进程加入pgid表示的进程组中
+
+会话：进程组的集合（进程组）
+pid_t getsid(pid_t pid);
+获取当前进程所属会话ID
+
+pid_t setsid(void);
+1 摆脱原会话
+2 摆脱原进程组
+3 摆脱终端
+
+作业：
+守护进程：
+int daemon(int nochdir, int noclose);
+
+1 父进程能消亡 子进程运行
+2 改变工作目录 chdir("/")
+3 0 1 2  /dev/null   dup2
+4 摆脱  setsid
+5 创建文件无权限掩码 umask（0）
+
+
+
+
+
+
+

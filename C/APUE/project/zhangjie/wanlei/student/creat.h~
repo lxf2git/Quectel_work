@@ -1,0 +1,10 @@
+#ifndef _CREAT_H_
+#define _CREAT_H_
+
+#include<stdio.h>
+#include<stdlib.h>
+
+void creat_memory(void **p,int size);
+void i_free(void **p);
+
+#endif

@@ -1,0 +1,22 @@
+#include"main.h"
+
+int main()
+{
+	int i;
+	char str1[100]={0},str2[50]={0};
+	char *str3;
+	for(i=0;i<N;i++)
+	{
+		str1[i]=getchar();
+		getchar();
+	}
+	for(i=0;i<N;i++)
+	{
+		str2[i]=getchar();
+		getchar();
+	}
+	mystrcpy(str1,str2);
+	printf("%s\n",str1);
+}
+
+

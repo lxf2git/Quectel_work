@@ -1,0 +1,26 @@
+#include "../include/list.h"
+#include "../include/ftp.h"
+
+void init_list(struct list *node)
+{
+	node->next = node;
+	node->prev = node;
+}
+
+
+void list_add_tail(struct list *head, struct list *insert)
+{
+	insert->next = head;
+	insert->prev = head->prev;
+	head->prev->next = insert;
+	head->prev = insert;
+}
+
+
+void list_remove(struct list *del)
+{
+	del->next->prev = del->prev;
+	del->prev->next = del->next;
+	del->next = NULL;
+	del->prev = NULL;
+}

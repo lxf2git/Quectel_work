@@ -1,0 +1,59 @@
+int getsocket(struct sockaddr_in addr, int *sockfd);//获得sockfd
+int send_information(const void *buf, int sockfd);//tcp发送
+int receive_information(void *buf, int sockfd);//tcp接收
+int login();//登录
+int judge_login(char *user, char *pwd);//登录判断
+int receive_course(void *buf);//进程接收
+int send_course(void *buf);//进程发送
+int put_client(int sockfd);//客户端 put
+int get_client(int sockfd);//客户端 get
+int other_command_client(int sockfd);//客户端 其他命令
+int put_server(int sockfd);//服务器put
+int get_server(int sockfd);//服务器 get
+int ls_pwd(int sockfd, int dest_port, char *command);//服务器 其他命令
+
+truct ftp_usr_info 		//登录信息
+{
+	char ftp_usrname[30];
+	char ftp_passwd[30];		
+}
+
+struct cli_to_ser	//	客户端发送内容
+{
+	enum cmd_type cmd;//	消息类型
+
+	union ftp_arg  // 消息内容
+	{
+		char struct ftp_usr_info;//LOGIN
+		char ftp_get_file[100];//get
+		char ftp_put_file[100];//put
+		char ftp_cd_path[100];//cd
+		char ftp_mkdir_path[100];//mkdir
+		
+};
+
+
+enum cmd_type  //消息类型
+{
+	LOGIN,
+	LS,
+	PUT,
+	GET,
+	CD,
+	PWD,
+	MKDIR,
+	QUIT		
+}
+
+struct recv_to_deal  //进程传送结构题
+{
+	struct cli_to_ser;  //用户
+	struct socaddr_in;//ip		
+}
+
+分工：聂衡阳 客户端, login, put get ...等
+	牛闻聪 服务器 login认证 put get 等函数功能
+	许荣燊 TCP 传送 接收 函数  守护进程
+	由壮 服务器 recv deal 守护进程 之间的传输 代码完善
+
+

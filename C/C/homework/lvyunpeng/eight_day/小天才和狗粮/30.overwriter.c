@@ -1,0 +1,53 @@
+#include<stdio.h>
+#include<string.h> 
+int main()
+{
+	char a[100]={" "}, b[100]={" "},c[128]={" "},recon_a,recon_b;
+	int i,n,s,times=0,size_a,size_b;
+	printf("请输入第一个字符串");
+	scanf("%s",a);
+	printf("请输入第二个字符串");
+	scanf("%s",b);
+	size_a=(int)strlen(a);
+	size_b=(int)strlen(b);
+	for(times;times<100;times++)
+	{
+		i=size_a-1;
+		for(;i>=1;i--)
+		{
+			if(a[i]<a[i-1])
+			{
+				recon_a=a[i];
+				a[i]=a[i-1];
+				a[i-1]=recon_a;
+			}
+		}
+		n=size_b-1;
+		for(;n>=1;n--)
+		{
+			if(b[n]<b[n-1])
+			{
+				recon_b=b[n];
+				b[n]=b[n-1];
+				b[n-1]=recon_b;
+			}
+		}
+	}
+	printf("第一个数列为%s\n第二个数列为%s\n",a,b);
+	i=size_a-1;n=size_b-1;
+	for(s=0;s<128;s++)
+	{
+		for(;i>=0;i--)
+		{
+			if(s=a[i])
+				c[s]=a[i];
+		}
+		for(;n>=0;n--)
+		{
+			if(s=b[n])
+				c[s]=b[n];
+		}
+	}
+	for(s=0;s<128;s++)
+	printf("综合为%c",c[s]);
+}

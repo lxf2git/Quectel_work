@@ -1,0 +1,91 @@
+#include"circle.h"
+int circle(pStackn stn,pStackx stx)
+{
+		int b;
+		int a3,a4=0,a2;
+		char c1,c2,c3;
+		popn(&stn,&b);
+		a2=b;
+		popx(&stx,&c);
+		c1=c;
+		while(popn(&stn,&b)!=EMPTY)
+		{
+				a3=b;
+				int ret = popx(&stx,&c);
+				c2=c;
+				if(ret==EMPTY)
+				c2='a';
+				switch(c1)
+				{
+						case '+':
+								if(c2!='*'&&c2!='/')
+								{	
+							//	printf("a2:%d+a3:%d\n",a2,a3);
+										a2=a3+a2;
+								}
+								else
+								{
+										a4=a2;
+										c3=c1;
+										a2=a3;
+								}
+								break;
+						case '-':
+								if(c2!='*'&&c2!='/')
+								{
+							//	printf("a2:%d-a3:%d\n",a2,a3);
+										if(c2=='-')
+										{
+												a2=a3+a2;
+										}
+										else
+												a2=a3-a2;
+													
+								}
+								else
+								{
+										a4=a2;
+										c3=c1;
+										a2=a3;
+								}
+								break;
+						case '*':
+							//	printf("a2:%d*a3:%d\n",a2,a3);
+								if(c2=='*'||c2=='/')
+									a2=a2*a3;
+								else
+								{
+										if(c3=='+')
+										a2=a2*a3+a4;
+										else
+										a2=a2*a3-a4;
+								}
+								break;
+						case '/':
+								if(c2=='*'||c2=='/')
+								a2=a3/a2;
+								else
+								{
+										if(c3=='+')
+										a2=a3/a2+a4;
+										else
+										a2=a3/a2-a4;
+								}
+								break;
+						case ')':
+								break;
+						case '(':
+								break;
+						case 'a':
+								break;
+						default:
+								printf("don't lie to me!\n");
+								return 0;
+						}	
+						c1=c2;	
+								
+						//		printf("%c",c);
+			
+		}
+		printf("%d\n",a2);
+}

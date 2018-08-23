@@ -1,0 +1,103 @@
+ fopen open close read write opendir closedir readdir mkdir chdir rmdir
+getcwd lseek stat/fstat/lstat dup2 fflush strerror sprintf link symlink  waitpid/wait
+fork clone getpid getppid getpgrp setsid daemon   exec system
+kill raise pause setjmp longjmp getopt glob crypt getpass exit _exit atexit
+getpwuid getpwnam getgrnam getgrgid getspnam
+setpwent getpwent endpwent getspent setspent endspent 
+time ctime asctime localtime    alarm setitimer  
+signal  
+sigemptyset sigaddset sigfillset sigdelset sigismember
+sigprocmask sigpending  
+
+sigaction/siqueue 处理带参数的信号 
+ 
+int sigaction(int signum, const struct sigaction *act,
+                     struct sigaction *oldact);
+
+struct sigaction {
+               void     (*sa_handler)(int);//同signal 表示无参信号处理函数
+               void     (*sa_sigaction)(int, siginfo_t *, void *);//
+               sigset_t   sa_mask;//处理该信号时要屏蔽的信号
+               int        sa_flags;
+	// 0 默认使用无参的信号处理函数 SA_SIGINFO 表示使用有参的信号处理函数
+               void     (*sa_restorer)(void);
+           };
+
+ siginfo_t {
+               int      si_signo;    /* Signal number */
+               int      si_errno;    /* An errno value */
+               int      si_code;     /* Signal code */
+               int      si_trapno;   /* Trap number that caused
+                                        hardware-generated signal
+                                        (unused on most architectures) 
+*/
+               pid_t    si_pid;      /* Sending process ID */哪个进程发送的
+               uid_t    si_uid;      /* Real user ID of sending process
+ */哪个用户发来的
+               int      si_status;   /* Exit value or signal */
+               clock_t  si_utime;    /* User time consumed */
+               clock_t  si_stime;    /* System time consumed */
+               sigval_t si_value;    /* Signal value */发送信号附带的数据
+               int      si_int;      /* POSIX.1b signal */
+               void    *si_ptr;      /* POSIX.1b signal */
+               int      si_overrun;  /* Timer overrun count; POSIX.1b timers */
+               int      si_timerid;  /* Timer ID; POSIX.1b timers */
+:
+
+
+int sigqueue(pid_t pid,  int  sig,  const  union  sigval
+       value);
+
+ union sigval {
+               int   sival_int;
+               void *sival_ptr;
+           };
+
+
+练习：slow cat   char/s
+
+共享内存
+
+ int ftruncate(int fd, off_t length);
+会将参数fd指定的文件大小改为参数length 指定的大小
+void *mmap(void *addr, size_t length, int prot, int flags,
+                  int fd, off_t offset);
+
+把fd代表的文件从离文件头offset的地方 开始的length个字节的数据 映射到内存addr开始的地址
+返回：实际映射成的地址
+
+addr一般不指定 赋值为NULL 即让系统自动选择合适地址
+
+prot：
+	PROT_EXEC  Pages may be executed.
+
+       PROT_READ  Pages may be read.
+
+       PROT_WRITE Pages may be written.
+
+flag：
+MAP_SHARED  共享 内存和文件同步
+MAP_PRIVATE 私有 内存和文件不同步
+
+int munmap(void *addr, size_t length);
+用于进程地址空间中结束映射关系
+addr：调用mmap返回的进程地址空间中用于映射的内存区域首地址
+
+
+作业：
+sigaction siqueue
+信号版 cat
+
+练习：mmap实现文件cp
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,20 @@
+#include"init.h"
+#include<stdlib.h>
+void manage_st(pmanage apply_head)
+{
+		int i;
+		for(i=0;i<10;i++)
+		{
+				pmanage apply_new;
+				great_memory(&apply_new);
+				apply_new->index=i+1;
+				apply_new->mem_size=APPLY;
+
+				apply->prev->next=apply_new;
+				apply_new->prev=apply_head->prev;
+				apply_new->next=apply_head;
+				apply->prev=apply_new;
+		}
+}
+
+

@@ -1,0 +1,25 @@
+#include"./weishu.h"
+
+
+void weishu()
+{
+	char a;
+	int n;
+	printf("请输入数字：\n");
+	getchar();
+        for(;a!=10;)
+	{
+		scanf("%c",&a);
+		printf(" ");
+		if(a>=0&&a<=9)
+		{
+			static n=0;
+			n+=1;
+			
+		}
+		else if(a=='\n')
+		break;
+				
+	}printf("你输入的数是%d位数\n",n);
+		
+}

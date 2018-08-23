@@ -1,0 +1,121 @@
+#include"main.h"
+
+int func(int confd, sCts buf)
+{
+	int err;
+	int line;
+	switch(buf.type)
+	{
+		case REGISTER://注册
+			printf("dsa\n");
+			err = reg_fun(confd, buf);
+			if(err == 0)
+			{
+				int yes;
+				read(confd, &yes, sizeof(int));
+				if(yes == 0)
+				{
+					printf("直接登录\n");
+					line = log_fun(confd, buf);
+				}
+			}
+			break;
+		case LOGIN://登录
+			line = log_fun(confd, buf);
+			break;
+		case SEARCH://搜查
+			if(line == 0)
+			{
+				search(confd, buf);
+			}
+			break;
+		case CONCERN://关注
+			if(line == 0)
+			{
+				concern(confd, buf);
+			}
+			break;
+		case NOT_CONCERN://取消关注
+			if(line == 0)
+			{
+				unconcern(confd, buf);
+			}
+			break;
+		case PUBLISH://发表
+			if(line == 0)
+			{
+				pub_web(confd, buf);
+			}
+			break;
+		case VIEW_BLOG://查看微波
+			if(line == 0)
+			{
+				view_web(confd, buf);
+			}
+			break;
+		case VIEW_FRI://查看朋友
+			if(line == 0)
+			{
+				view_friend(confd, buf);
+			}
+			break;
+		case VIEW_FAN://查看粉丝
+			if(line == 0)
+			{
+				view_fans(confd, buf);
+			}
+			break;
+		case QUIT_V:
+			if(strcmp(buf.usr_nam, buf.exe_fun.search_usr_name) != 0)
+			{
+				last(confd, buf);
+			}
+			break;
+		case QUIT_S://退出微博
+			if(line == 0)
+			{
+				quit(confd, buf);
+			}
+			break;
+		default:
+			err = 10;
+			write(confd, &err, sizeof(int));
+			break;
+	}		
+}
+
+void init_red(pRed *p)
+{
+	creat_memory((void **)p, sizeof(sRed));
+	(*p)->online = -1;
+	(*p)->concern_num = 0;
+	(*p)->friend_num = 0;
+	(*p)->publish_num = 0;
+	init_fans(&(*p)->fans_list);
+	init_friend(&(*p)->fri_list);
+	init_web(&(*p)->web_list);
+}
+
+void init_fans(pFan *p)
+{
+		creat_memory((void **)p, sizeof(sFan));
+		(*p)->prev = *p;
+		(*p)->next = *p;
+}
+
+void init_friend(pFri *p)
+{
+		creat_memory((void **)p, sizeof(sFri));
+		(*p)->prev = *p;
+		(*p)->next = *p;
+}
+
+void init_web(pWeb *p)
+{
+		creat_memory((void **)p, sizeof(sWeb));
+		(*p)->praise = 0;
+		(*p)->com_num =0;
+		(*p)->prev = *p;
+		(*p)->next = *p;
+}
+

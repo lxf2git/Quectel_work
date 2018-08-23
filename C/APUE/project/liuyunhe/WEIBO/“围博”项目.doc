@@ -1,0 +1,110 @@
+围博项目计划
+1.思路：
+		c-s结构；
+		服务器与客户端利用tcp协议传递信息；（端口号为6666）
+		客户端负责界面的处理；
+		客户端解析用户输入的命令与输入信息，确认命令正确，信息符合要求后传给
+服务器；
+		服务器利用线程去实现一个服务器对应多个客户端；
+		服务器建立一个循环链表存入每个用户的信息；（结构如下）
+		用户在客户端输入命令服务器接到信息后分析，调取相应函数进行解析后再发送给客户端；
+2.分工
+		 李汉文：客户端；
+		 杨雪松：服务器主干；
+		 思维：	
+				查看关注；
+				查看个人围博；
+				发微博；
+				查看个人信息；
+				评论；
+				关注；
+		刘云鹤：
+				注册；
+				登录；
+				搜索；（name 与 id）
+				查看粉丝列表；
+				查看个人观注围博；
+				取关；
+3.界面：
+		 1.注册/登录；
+		 2:
+			1）搜索： 
+					（1）ID搜索:
+								（1）关注：
+								（2）查看微博；
+												（1）评论
+												（2）退出
+					（2）NAME搜索:						
+								（1）关注：
+								（2）查看微博；
+												（1）评论
+												（2）退出
+					（3）退出
+			2）查看：
+					（1）查看粉丝列表（name，ID）
+					（2）查看微博(关注人的围博)
+												 （1）评论
+												 （2）退出
+					（3）查看关注列表 （name、ID）:
+													（1）取消关注；
+													（2）退出；
+					（4）退出
+			3）发微博：
+					（1）发微博
+					（2）退出
+			4）个人信息：
+					（1）查看个人信息
+					（2）退出
+			5）退出
+4.结构体：
+		struct message					/*传的函数*/
+		{ 
+				int sockfd;/*套接字*/
+				char uerid[30];/*用户id*/
+				char destid[30];/*目的id*/
+		};
+		typedef struct fans				/*粉丝*/
+		{
+				int fans_id;			/*粉丝id*/
+				char fans_name[30];		/*粉丝名称*/
+				struct fans *next;
+				struct fans *prev;
+		}sFans,*pFans;
+		
+		typedef struct attenrion				/*关注*/
+		{
+				int attenrion_id;				/*关注的人id*/
+				char attenrion_name[30];		/*关注人的名字*/
+				struct attenrion *next;			
+				struct attenrion *prev;
+		}sAttenrion,*pAttenrion;
+		typedef struct comment					/*评论*/
+		{
+				char comment_content[1024];		/*评论内容*/
+				int content_id;					/*评论人的id*/
+				int content_name[30];			/*评论人名字*/
+				struct comment *next;
+				struct comment *prev;	
+		}sComment,*pComment;
+
+		typedef struct publish					/*发博信息*/
+		{
+				int number;						/*围博编号*/
+				char content[1024];				/*围博内容*/
+				int praise;						/*点赞个数*/
+				pComment comment_Head;			/*评论内容*/
+				struct publish *next;
+				struct pudlish *prev;
+		}sPublish,*pPublish；
+
+		typedef struct user					/*用户信息*/
+		{
+				int id;						/*用户id*/	
+				char password[30];			/*用户密码*/
+				char name[30];				/*用户名字*/
+				pFans fans_Head;			/*粉丝头*/
+				pAttenrion attenrion_Head;	/*关注头*/
+				pPublish publish_Head;		/*围博头*/
+				struct user *next;
+				struct user *prev;
+		}sUser,*pUser;

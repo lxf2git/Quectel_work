@@ -1,0 +1,48 @@
+int system(const char *command);
+char *getenv(const char *name);
+根据环境变量名获取环境变量值 如果环境变量名不存在 则返回NULL
+
+ int putenv(char *string);
+string格式:name=value
+如果name存在 则修改name的值为value
+如果那么不存在 添加name到环境变量列表中并赋值为value
+
+ int setenv(const char *name, const char *value, int overwrite);
+
+int unsetenv(const char *name);
+
+
+char *strchr(const char *s, int c);
+在字符串里找字符c 没找到 返回NULL 找到则返回字符地址
+
+
+
+extern char **environ;
+
+       int execl(const char *path, const char *arg, ...);
+       int execlp(const char *file, const char *arg, ...);
+       int execle(const char *path, const char *arg,
+                  ..., char * const envp[]);
+       int execv(const char *path, char *const argv[]);
+       int execvp(const char *file, char *const argv[]);
+功能：在本进程中加载另一个程序并从头开始执行
+作业：shell
+
+[root@doudou five_day]#
+
+1 getenv gethostname  getcwd root #  $
+2 ls -ial /home
+3 mkdir pwd cd echo $PATH
+4 > < >> 
+
+
+
+
+
+
+
+
+
+
+
+

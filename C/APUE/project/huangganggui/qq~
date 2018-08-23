@@ -1,0 +1,66 @@
+struct UserInformation
+{
+        char userId[10];
+        char passwd[10];
+        char vip;
+        long balance;
+};
+union dataOrinformation
+{
+        char data[200];
+        struct UserInformation loginInformation;
+}
+
+
+
+typedef struct Data
+{
+        int  mode;                              //数据类型
+        char destAddr[20];                      //目的地址
+        char sourceAddr[20];                    //源地址
+        char fileName[20];			//文件名
+        char time[30];                          //当前时间
+        struct timeval vtime;                   //微妙毫秒
+        union dataOrinformation dorinform;      //数据或者信息
+
+        struct data *next;
+        struct data *prev;
+
+
+}sData_package,*pData_package;
+
+enum
+{
+        LOGIN,          //登入
+        REGISTER,       //注册
+        ADDFRIEND,      //添加好友
+	DELFRIEND,	//删除好友
+        ADDVIP,         //VIP
+        ADDBALANCD,     //充值
+        TELLS_INVITE,   //群聊邀请
+        TELLS_REPLY,    //群聊答复
+        FILE_REQUES,    //文件请求
+        TELL_REQUES,    //谈话请求
+        REQUES_EXIT,    //请求结束
+        LOGINERROR,     //登录失败
+        LOGINSUCCEED,   //登录成功
+        REGISTERERROR,  //注册失败
+        REGISTERSUCCEED,//注册成功
+        LEAVE,          //下线通知
+        CHECK,          //检测
+        FRIENDRE,       //好友回应
+        FRIENDLIST,     //好友链表
+        END             //最后一个
+};
+
+typedef struct 
+{
+        int sockfd_send;
+        int sockfd_recv;
+        int sockfd_chec;
+        struct sockaddr_in *paddr_send;
+        struct sockaddr_in *paddr_recv;
+        struct sockaddr_in *paddr_chec;
+}sSocks;
+
+

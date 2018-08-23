@@ -1,0 +1,40 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <strings.h>
+#include <string.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+typedef struct
+{
+		int id;
+		char name[20];
+}cdata;
+int main()
+{
+	int fd = open("file",O_RDWR|O_CREAT,0666);
+	ftruncate(fd,2048);
+	cdata udata;
+	cdata *p=NULL;//cdata p[n];
+	//ftruncate(fd,10);//这里改成几个结构体大小，那就只能读出几个
+	p=(cdata *)mmap(0,2048,PROT_READ|PROT_WRITE,MAP_SHARED,fd,0);//这里第二个参数只要不是0，那它就能自动分配空间
+	cdata hehe;
+	hehe.id=100;
+	strcpy(hehe.name,"anfwef");
+	p[0]=hehe;
+	
+	strcpy((p[2]).name,"hihi");p[2].id=10086;
+	
+	printf(" %d %s\n %d %s\n %d %s\n",(p[0]).id,(p[0]).name,(p[1]).id,(p[1]).name,p[2].id,p[2].name);
+	munmap(p,2048);
+	close(fd);
+	/*udata.id = 501278893;
+	strcpy(udata.name,"duoduo");
+	write(fd,&udata,sizeof(udata));
+	udata.id = 258983123;
+	strcpy(udata.name,"dangdang");
+	write(fd,&udata,sizeof(udata));*/
+	return 0;
+}

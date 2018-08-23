@@ -1,0 +1,59 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+BEEP_H	include/beep.h	2;"	d
+EINT_H	include/eint.h	3;"	d
+EXT_INT43CON	include/key.h	4;"	d
+EXT_INT43_MASK	include/key.h	5;"	d
+EXT_INT43_PEND	include/key.h	6;"	d
+GPD0CON	include/beep.h	4;"	d
+GPD0DAT	include/beep.h	5;"	d
+GPM4CON	include/led.h	4;"	d
+GPM4DAT	include/led.h	5;"	d
+GPX3CON	include/key.h	3;"	d
+ICCEOIR_CPU0	include/eint.h	16;"	d
+ICCIAR_CPU0	include/eint.h	15;"	d
+ICCICR_CPU0	include/eint.h	5;"	d
+ICCPMR_CPU0	include/eint.h	6;"	d
+ICDDCR	include/eint.h	7;"	d
+ICDIPR16	include/eint.h	10;"	d
+ICDIPR16	include/eint.h	11;"	d
+ICDIPR18	include/eint.h	13;"	d
+ICDIPTR18	include/eint.h	14;"	d
+ICDISER2	include/eint.h	8;"	d
+KEY_H	include/key.h	2;"	d
+LED_H	include/led.h	2;"	d
+Ttext	Makefile	/^	arm-linux-ld  -Ttext=70003000 start.o main.o  -o wdt$/;"	m
+WDT_H	include/wdt.h	2;"	d
+WTBASE	include/wdt.h	4;"	d
+WTCLRINT	include/wdt.h	8;"	d
+WTCNT	include/wdt.h	7;"	d
+WTCON	include/wdt.h	5;"	d
+WTDAT	include/wdt.h	6;"	d
+_COMMON_H	include/common.h	2;"	d
+_do_irq	start.s	/^_do_irq:$/;"	l
+_end	start.s	/^_end:$/;"	l
+_start	start.s	/^_start:$/;"	l
+delay	main.c	/^void delay(int ms)$/;"	f
+do_irq	main.c	/^void do_irq(void)$/;"	f
+do_key	main.c	/^void do_key()$/;"	f
+do_wdt	main.c	/^void do_wdt()$/;"	f
+irq	start.s	/^irq:$/;"	l
+irq_key	main.c	/^void irq_key()$/;"	f
+irq_processor	main.c	/^void irq_processor()$/;"	f
+irq_wdt	main.c	/^void irq_wdt()$/;"	f
+main	main.c	/^int main()$/;"	f
+mem_init	main.c	/^void mem_init(unsigned long* ttb)$/;"	f
+memcpy	main.c	/^  void memcpy(char *dest, const char *src, int n)$/;"	f
+mmap	main.c	/^void mmap(unsigned long* ttb, unsigned long va,unsigned long pa)$/;"	f
+mmu_enable	main.c	/^void mmu_enable(void)$/;"	f
+mmu_init	main.c	/^void mmu_init(void)$/;"	f
+mmu_map	main.c	/^void mmu_map()$/;"	f
+printf	include/common.h	4;"	d
+start	start.s	/^start:$/;"	l
+wdt_eint_enable	main.c	/^void wdt_eint_enable()$/;"	f
+wdt_enable	main.c	/^void wdt_enable()$/;"	f
+wdt_init	main.c	/^void wdt_init(int ms) \/\/100M\/(99+1) = 1M;    1024*1024\/128 = 1024*8 HZ;  $/;"	f

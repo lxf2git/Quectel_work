@@ -1,0 +1,41 @@
+#include"main.h"
+
+int main()
+{
+		int i=0;
+		int l=0,END;
+		pMod pmod_head;
+		gmod_memoty(&pmod_head);
+		mod_and_data(pmod_head);
+		FILE *fp;
+		fp = fopen("b.txt","r+");
+		fseek(fp,0,SEEK_END);
+		END=ftell(fp);
+		fseek(fp,0,SEEK_SET);
+		while(l!=END)
+		{
+			char ch[20]={'\0'};
+			char word[20]={'\0'};
+			i=0;
+			do
+			{
+				fread(ch,1,1,fp);
+				if(ch[0]>='a'&&ch[0]<='z'||ch[0]>='A'&&ch[0]<='Z')
+				{
+						printf("%c\n",ch[0]);
+						word[i]=ch[0];
+						i++;			
+				}
+
+			}while(ch[0]>='a'&&ch[0]<='z'||ch[0]>='A'&&ch[0]<='Z');
+			if(word[0]!='\0')
+			{
+				hash_word(pmod_head,word);
+			printf("word  %s,,l %d\n",word,l);
+			}
+			l=ftell(fp);
+	//		printf("word  %s,,l %d\n",word,l);
+		}
+		print_word(pmod_head);
+		printf("****END****\n");
+}

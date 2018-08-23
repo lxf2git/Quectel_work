@@ -1,0 +1,53 @@
+struct ftp_usr_info
+{
+	char ftp_usrname[30];
+	char ftp_passwd[30];		
+}
+
+struct cli_to_ser
+{
+	enum cmd_type cmd;
+
+	union ftp_arg
+	{
+		char struct ftp_usr_info;//LOGIN
+		char ftp_get_file[100];//get
+		char ftp_put_file[100];//put
+		char ftp_cd_path[100];//cd
+		char ftp_mkdir_path[100];//mkdir
+		
+};
+
+
+enum cmd_type
+{
+	LOGIN,
+	LS,
+	PUT,
+	GET,
+	CD,
+	PWD,
+	MKDIR,
+	QUIT		
+}
+
+struct recv_to_deal
+{
+	struct cli_to_ser;
+	struct socaddr_in;//ip		
+}
+
+文档：
+
+项目名称
+项目功能
+思路：
+分工：
+相关结构体
+
+
+
+
+
+
+

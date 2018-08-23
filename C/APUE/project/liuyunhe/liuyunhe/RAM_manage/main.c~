@@ -1,0 +1,35 @@
+#include"main.h"
+
+
+int main()
+{
+		int i;
+		pmanage apply_head;
+		great_memory(&apply_head);
+		manage_st(apply_phead);
+		while(1)
+		{
+				printf("1.apply  2.free 3.printf  4 exit\n");
+				printf("please:\n");
+				scanf("%d",&i);
+				switch(i)
+				{
+					case apply_:
+							apply(apply_head);
+							break;
+					case free_:
+							myfree();
+							break;
+					case print_:
+							myprint();
+							break;
+					case exit_:
+							exit -1;
+							break;
+					default:
+							printf("sorry  mistake\n");
+							break;
+						
+				}
+		}
+}

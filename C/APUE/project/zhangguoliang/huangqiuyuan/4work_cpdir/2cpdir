@@ -1,0 +1,58 @@
+#include"../apue.h"
+
+
+
+void rd(DIR *dir_src,DIR *dir_des)
+{
+	struct dirent *red;
+	struct stat stat;
+	while(1)
+	{
+		red=readdir(dir_src);
+		if(red==NULL)
+			break;
+			if(red->d_name[0]!='.')
+			{
+				lstat(red->d_name,&stat);
+				//open(red->d_name,O_CREAT|O_EXCL)
+				if(S_ISREG(stat.st_mode))
+				{
+					char buf[1024];
+					int i;
+					while(1)
+					{
+						i=read(red->d_name,buf,1000);
+						
+						if(i==0)
+						break;
+					}
+
+				}
+			}
+	}
+}
+
+int main(int argc,char **argv)
+{
+	if(argc!=3)
+	{
+		perror("loose dir name");
+		return 0;
+	}
+
+	DIR *dir_src=opendir(argv[1]);
+		if(dir_src==NULL)
+		{
+			perror("NO DIR_1");
+			return -1;
+		}
+	
+	DIR *dir_des=opendir(argv[2]);
+		if(dir_des==NULL)
+		{
+			mkdir(argv[2],0777);		
+		}
+	rd(dir_src,dir_des);
+	
+	return 0;
+}

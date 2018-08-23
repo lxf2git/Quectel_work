@@ -1,0 +1,167 @@
+一切皆是文件。
+函数功能，函数参数，函数返回值，错误码(数值表示一类错误)。
+单词_单词 单词单词
+
+文件操作步骤：
+1 文件打开
+int open(const char *pathname, int flags);
+int open(const char *pathname, int flags, mode_t mode);
+
+2 文件操作
+ssize_t write(int fd, const void *buf, size_t count)
+功能：从文件中读取数据
+参数：
+fd：文件描述符
+buf：缓冲区
+count：缓冲区大小
+返回值：
+
+ssize_t read(int fd, void *buf, size_t count)
+功能：往文件里写入数据
+fd:文件描述符
+buf：存放数据缓冲区
+count：缓冲区大小，想从文件读取的字节数
+返回值：成功=读取字节数 0=文件末尾 失败=-1
+
+off_t lseek(int fd, off_t offset, int whence)
+功能：对于文件位置指针定位
+fd:
+offset:偏移
+whence：参照 SEEK_SET SEEK_CUR SEEK_END
+返回值：成功=偏移 失败=-1
+
+off_t:/usr/include/sys/types.h
+	# ifndef __USE_FILE_OFFSET64
+	typedef __off_t off_t;//32
+	# else
+	typedef __off64_t off_t;//64
+	# endif
+__USE_FILE_OFFSET64:/usr/include/features.h
+	#if defined _FILE_OFFSET_BITS && _FILE_OFFSET_BITS == 64
+	# define __USE_FILE_OFFSET64    1
+	#endif
+
+--<F4>3 文件关闭
+close
+
+文件描述符：
+系统怎样分配文件描述符：当前系统最小并空闲的文件描述符分配给打开文件
+标准输入=0 键盘
+标准输出=1 屏幕 缓冲区
+标准错误=2 屏幕 没有缓冲区
+
+dup 
+int dup2(int oldfd, int newfd)
+文件描述符的复制，实现了oldfd和newfd同时指向oldfd所指向的文件。
+返回值：成功=newfd 失败=-1
+
+FILE *fdopen(int fd, const char *mode)
+fd：文件描述符
+mode：属性
+返回值：成功=FILE
+
+int fileno(FILE *stream)
+
+
+int stat(const char *path, struct stat *buf);
+int fstat(int fd, struct stat *buf);
+int lstat(const char *path, struct stat *buf);
+功能：根据文件路径/文件描述符获取文件属性
+struct stat {
+		dev_t     st_dev; //设备号
+		ino_t     st_ino; //inode    
+		mode_t    st_mode;//权限    
+		nlink_t   st_nlink;//硬链接数  
+		uid_t     st_uid;//用户id
+		gid_t     st_gid;//用户组id
+		dev_t     st_rdev;//设备号
+		off_t     st_size;//大小
+		blksize_t st_blksize;
+		blkcnt_t  st_blocks;
+		time_t    st_atime;
+		time_t    st_mtime;
+		time_t    st_ctime;
+};
+
+作业：
+利用open\read\write\close实现cp命令
+
+mode_t umask(mode_t mask)
+设置权限屏蔽字
+
+int link(const char *oldpath, const char *newpath);
+创建一个硬链接，不能给目录设置硬链接，不能在不同文件系统上创建硬链接。
+
+int symlink(const char *oldpath, const char *newpath)
+创建一个软链接
+oldpath:输入绝对路径
+
+硬链接相当于是对于源文件的备份，源文件删所不影响连接文件。
+软链接相当于是快捷方式，如果源文件删除，则链接文件失效。
+
+目录：
+int mkdir(const char *pathname, mode_t mode)
+创建目录
+
+int rmdir(const char *pathname);
+删除目录
+注意： which must be empty
+
+int chdir(const char *path)
+切换调用进程的工作目录
+
+遍历目录
+DIR *opendir(const char *name);
+打开目录
+返回:成功=目录句柄
+
+struct dirent *readdir(DIR *dirp);
+
+int closedir(DIR *dirp);
+
+//etc/shadow
+struct spwd *getspnam(const char *name)
+根据系统用户获取相应信息struct spwd
+
+ftp: f:file t:translation p:protocol 用户
+
+// /etc/passwd
+struct passwd *getpwnam(const char *name);
+struct passwd *getpwuid(uid_t uid);
+//打开/etc/passwd
+void setpwent(void);
+//获取一体记录
+struct passwd *getpwent(void);
+//关闭/etc/passwd
+void endpwent(void);
+
+命令(ls) [-选项(lai)] [选项参数(文件/目录)]
+int getopt(int argc, 
+           char * const argv[],
+           const char *optstring);
+extern char *optarg;
+extern int optind, opterr, optopt;
+
+
+
+作业：
+实现：
+ls       文件名称
+ls -l    属性+文件名称
+ls -a    所有文件名称
+ls -i    inode+文件名称
+ls -la   所有文件属性+文件名称
+ls -li   文件属性+文件名称+inode
+ls -lia  所有文件属性+文件名称+inode
+ls -lia 文件/目录 
+ls 文件/目录
+
+
+
+
+
+
+
+
+
+

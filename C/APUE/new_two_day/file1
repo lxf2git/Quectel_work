@@ -1,0 +1,14 @@
+ssize_t write(int fd, const void *buf, size_t count)
+功能：从文件中读取数据
+参数：
+fd：文件描述符
+buf：缓冲区
+count：缓冲区大小
+返回值：
+
+ssize_t read(int fd, void *buf, size_t count)
+功能：往文件里写入数据
+fd:文件描述符
+buf：存放数据缓冲区
+count：缓冲区大小，想从文件读取的字节数
+返回值：成功=读取字节数 0=文件末尾 失败=-1

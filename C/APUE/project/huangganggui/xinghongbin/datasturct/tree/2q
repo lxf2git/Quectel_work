@@ -1,0 +1,205 @@
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct tree
+{
+
+	int data;
+	int tr_parent;//结构体_成员在结构体中的作用
+	struct tree *prev;
+	struct tree *plc;
+	struct tree *prc;	
+}sTree,*pTree;
+
+void init_tree(pTree p,int num);
+void create_tree(pTree tree,int num);
+void fill(pTree p,pTree pRoot);
+void mid_tree(pTree pRoot);
+void show_tree(pTree pRoot);
+void delete_tree(pTree pRoot);
+void find_point(pTree pRoot,int data);
+void delete_point(pTree p);
+pTree ergodic_left(pTree p);
+pTree ergodic_right(pTree p);
+int main()
+{
+
+//	int arr[]={22,7,12,34,30,45,23};
+	sTree tree[7];
+
+	init_tree(tree,7);                               //初始化-1
+	create_tree(tree,7);                        //赋数据 比较 下标改变
+	delete_tree(tree);
+	show_tree(tree);                                //中序遍历 
+		
+	return 0;
+
+}
+void init_tree(pTree p,int num)
+{
+		int i;
+		for(i=0;i < num;i++)
+		{
+				(p+i)->prev = (p+i);
+				(p+i)->plc = NULL;
+				(p+i)->prc = NULL;
+		}
+}
+void create_tree(pTree tree,int num)
+{
+		int data;
+		int i;
+		for(i=0;i<num;i++)
+		{
+				scanf("%d",&data);
+				tree[i].data = data;
+				if(i>0)
+				fill(tree+i,tree);
+
+		}
+}
+void fill(pTree p,pTree pRoot)
+{
+		if(p->data > pRoot->data)
+		{
+				if(pRoot->prc == NULL)
+				{
+
+						pRoot->prc = p;
+						p->prev = pRoot;
+	//					printf("prev:%d\n",p->prev->data);
+					
+				}
+				else
+				{
+						fill(p,pRoot->prc);
+				}
+		}
+		if(p->data <= pRoot->data)
+		{
+				if(pRoot->plc == NULL)
+				{
+
+						pRoot->plc = p;
+						p->prev = pRoot;
+					
+				}
+				else
+				{
+						fill(p,pRoot->plc);
+				}
+		}
+
+
+}
+void mid_tree(pTree pRoot)
+{
+
+		if(pRoot->plc != NULL)
+		{
+			mid_tree(pRoot->plc);
+		}
+	
+		printf("%d ",pRoot->data);
+		if(pRoot->prc != NULL)
+		{
+			mid_tree(pRoot->prc);
+		}
+}
+
+void show_tree(pTree pRoot)
+{
+	//prev_tree();
+	mid_tree(pRoot);
+	//last_tree();
+}
+
+void delete_tree(pTree pRoot)
+{
+		int data;
+		printf("input you delete data\n");
+		scanf("%d",&data);
+		find_point(pRoot,data);
+
+}
+void find_point(pTree pRoot,int data)
+{
+		pTree p = pRoot;
+		while( (p != NULL) )
+		{
+				if((p->data > data) )
+				{
+						p = p->plc;
+						printf("%d\n",p->data);
+				}
+
+				if((p->data < data))
+				{
+						p = p->prc;
+						printf("%d\n",p->data);
+				}
+				if(p->data == data)
+				{
+						printf("finded\n");
+						delete_point(p);
+						return ;
+				}
+
+		}
+
+
+}
+void delete_point(pTree p)
+{
+		pTree pTemp;
+		printf("%d\n",p->data);
+		printf("%d\n",p->prev->data);
+		if(p->prev->data < p->data)
+		{
+				if(p->prc != NULL)
+				{
+						pTemp = ergodic_left(p->prc);
+						pTemp->prev->plc = pTemp->prc;
+						pTemp->prc = p->prc;
+						pTemp->prev = p->prev;
+						p->prev->prc = pTemp;
+				}
+				else
+						p->prev->plc = p->plc;
+
+		}
+		if(p->prev->data > p->data)
+		{		if(p->plc != NULL)
+				{
+						pTemp = ergodic_right(p->plc);
+						pTemp->prev->prc = pTemp->plc;
+						pTemp->plc = p->plc;
+						pTemp->prev = p->prev;
+						p->prev->plc = pTemp;
+				}
+				else
+						p->prev->prc = p->prc;
+
+		}
+		
+}
+
+pTree ergodic_left(pTree p)
+{
+		if(p->plc != NULL)
+		{
+				ergodic_left(p->plc);
+		} 
+		else
+				return p;
+}
+
+pTree ergodic_right(pTree p)
+{
+		if(p->prc != NULL)
+		{
+				ergodic_right(p->prc);
+		}
+		else
+				return p;
+
+}

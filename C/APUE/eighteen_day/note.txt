@@ -1,0 +1,93 @@
+互斥量：
+pthread_mutex_t m; 
+p
+
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+直接初始化
+thread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
+
+int pthread_mutex_init(pthread_mutex_t *restrict mutex,
+  const pthread_mutexattr_t *restrict attr);
+pthread_mutex_init(&m,NULL);
+初始化一个互斥量
+
+int pthread_mutex_lock(pthread_mutex_t *mutex);
+pthread_mutex_lock(&m);
+对一个互斥量加锁  如果互斥量已经加锁 函数会一直等 等到有线程把这个互斥量解锁后 再去加锁
+
+    
+int pthread_mutex_unlock(pthread_mutex_t *mutex);
+pthread_mutex_unlock(&m);
+对一个互斥量解锁 哪个线程加锁 只能由哪个线程解锁 别的线程不能解
+int pthread_mutex_destroy(pthread_mutex_t *mutex);
+销毁一个互斥量
+//链表：创建（根据输入的数据）--find---delete--print
+
+
+pthread_cond_t c;
+条件变量
+ int pthread_cond_wait(pthread_cond_t *restrict cond,
+              pthread_mutex_t *restrict mutex);
+pthread_cond_wait(&c,&m);
+在一个条件变量上等待通知 条件变量总要根一个互斥量一起使用
+在pthread_cond_wait前必须先把互斥量加锁 pthread_cond_wait函数自动把互斥量解锁后
+处于等待状态 得到通知后结束等待状态 就又会自动将互斥量加锁 然后pthread_cond_wait函数返回
+
+int pthread_cond_signal(pthread_cond_t *cond);
+通知一个等待这个条件的线程
+如果有多个线程在等待 则只有一个得到通知 如果没有线程在等待 这个通知作废 不会保留
+
+ int pthread_cond_broadcast(pthread_cond_t *cond);
+通知所有正在等待这个条件的线程 没有等待的 也作废
+
+int pthread_cond_destroy(pthread_cond_t *cond);
+       int pthread_cond_init(pthread_cond_t *restrict cond,
+              const pthread_condattr_t *restrict attr);
+       pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+
+
+m.type = (long)0;
+
+
+
+
+
+信号量：posix  system v
+sem_t s;
+ 
+int sem_init(sem_t *sem, int pshared, unsigned int value);
+sem_init(&s,0,n)//初始化一个信号量的值为n
+初始化一个信号量
+
+参数2 是否用于进程间  0 表示不在进程间使用
+参数3  计数器的初值
+
+int sem_wait(sem_t *sem);
+sem_wait(&s);//把计数器-1 如果不够减 就等待 直到够减为止
+
+
+int sem_post(sem_t *sem);
+sem_post(&s);//把计数器+1
+
+int sem_destroy(sem_t *sem);
+销毁一个信号量
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

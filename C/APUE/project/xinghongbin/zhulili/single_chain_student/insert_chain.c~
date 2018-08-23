@@ -1,0 +1,90 @@
+#include"insert_chain.h"
+typedef struct student
+{
+	int num;
+	int age;
+	struct student *next;
+	void (*stu_print)(struct student *);//单个学生的输出函数
+	int (*stu_input)(struct student *);//单个学生的输入函数
+}sStu,*pStu;
+//pStu ps=malloc;
+//ps->stu_print = std_out;
+//ps->stu_print(ps);
+//void stu_out(struct student *p)
+//{
+	//p->num
+	//p->age
+//}
+typedef struct list
+{
+	pStu head;  //学生链表头节点
+	//插入函数的参数：pIDFind:查找插入的ID是否已经存在
+	//pInsertPosition:查找插入结点的位置	
+	int (*pInsert)( pStu pHead,  pStu pInsert,
+		        int (*pIDFind)(pStu pHead,pStu pInsert),
+		        pStu (*pInsertPosition)(pStu pHead,pStu pInsert) );
+	int (*pDel)( pStu pHead,
+		     pStu (*pDelPosition)(pStu pNode,int age));
+	//打印函数：打印链表数据
+	void (*pPrint)(pStu pHead)
+	//查找函数：pFun_search:查找函数数组，按年龄和ID查找
+	int (*pSearch)( pStu pHead, 
+		        int (*pFun_Search[2])(pStu pHead,int num));
+	//保存函数
+	int (*pStu_Save)(pStu pHead,FILE*fd);
+}sList,*plist;
+void create_memory(pNode *p,int size)
+{
+	*p = (pNode)malloc(size);
+	if(*p == NULL)
+	{
+		printf("malloc error");
+		exit(-1);
+	}
+}
+
+void init_node(pNode *p,int size)
+{
+	create_memory(p,size);
+	(*p)->next = NULL;
+}
+
+int insert_back(pNode pPos,pNode pIn)  //pPin 插到 pPos后面
+{
+	pNode pTrav = NULL;
+	if(pPos == NULL || pIn == NULL )
+	{
+		return -1;
+	}
+	pIn->next = pPos->next;
+	pPos->next = pIn; 
+	return 0;
+}
+
+pNode find_front(pNode pHead,pNode pnew)
+{
+	pNode ptmp = pHead;
+	while(ptmp->next!=NULL )  
+	{
+		if(ptmp->next->id >= pnew->id )
+		{
+			return ptmp;
+		}
+		ptmp = ptmp->next;
+	}
+	return ptmp;
+	
+}
+
+pNode insert_chain(pNode pHead)
+{
+	pNode pnew = NULL;
+	pNode pmax_front = NULL;
+	printf("请输入id 姓名 年龄：\n");	
+	init_node(&pnew,sizeof(sNode));
+	scanf("%d%s%d",&pnew->id,pnew->name,&pnew->age);
+	pmax_front = find_front(pHead,pnew);
+	insert_back(pmax_front,pnew);
+	return  pnew;
+	
+}

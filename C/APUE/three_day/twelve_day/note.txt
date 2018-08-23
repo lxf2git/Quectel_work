@@ -1,0 +1,215 @@
+信号
+sinal sigaction
+
+共享内存
+mmap  ftruncate-mmap-(SHARED)-munmap-close
+
+
+专有进程间通信
+key
+shmget
+shmat
+shmdt
+shmctl
+
+管道 
+匿名  pipe
+有名 mkfifo
+
+专有进程间通信
+消息队列：
+msgget/snd/rcv/ctl
+
+信号量：控制访问同一资源的进程的数量 控制多个进程同步
+ int semget(key_t key, int nsems, int semflg);
+创建或取得一个信号量集对象
+nsems：信号量的个数 一般是1
+成功返回对象id 失败-1
+
+semflg：
+
+  int semop(int semid, struct sembuf *sops, unsigned nsops);
+对信号量进行数组sops所指定的操作 
+nsops：数组中元素的个数 一般是1
+
+struct sembuf
+{
+unsigned short sem_num;  /* semaphore number */要操作的信号量编号 一般0 表示一个信号量
+           short          sem_op;   /* semaphore operation */计数器操作 一般为+1 或者-1
+           short          sem_flg;  /* operation flags */
+
+	 SEM_UNDO 进程结束时 系统自动复原它对计数器的操作 （一般都指定这个标志）
+
+ int semctl(int semid, int semnum, int cmd, ...);
+
+semctl(semid,0,IPC_RMID,NULL);//删除信号量集对象
+semctl(semid,0,SETVAL,3);//设置编号（下标）为0的信号量的值为3
+
+
+作业：
+进程1 从键盘获取一个字符串 放到共享内存中
+进程2：从共享内存上获取字符串 转为大写 放到内存中
+进程1获取转换后的字符串并输出到屏幕
+
+网络通信：
+协议：
+网络通信的协议模型:OSI
+物理层：物理设备
+数据链路层：
+网络层：ip
+传输层：tcp udp
+会话层：
+表示层：字节序 0x12345678
+应用层：
+
+大端模式：低位存于高地址  高位存于低地址
+小端模式：低位存于低地址 高位存于高地址
+
+ uint16_t htons(uint16_t hostshort);//2字节的本机格式到网络格式
+h:host to n:network s:short
+
+uint32_t htonl(uint32_t hostlong);//4字节的本机格式转到网络格式
+
+uint16_t ntohs(uint16_t netshort);//2字节的网络格式转到本机格式
+
+uint32_t ntohl(uint32_t netlong);//4字节的网络格式转到本机格式
+
+ int inet_pton(int af, const char *src, void *dst);
+把点分十进制格式ip地址转成内部格式ip地址
+ const char *inet_ntop(int af, const void *src,
+                             char *dst, socklen_t size);
+把内部格式ip地址转成点分十进制格式ip地址
+
+in_addr_t inet_addr(const char *cp);
+把点分十进制格式ip地址转成内部格式ip地址
+
+int inet_aton(const char *cp, struct in_addr *inp);
+把IPV4的点分十进制地址转成内部格式后 存到第二个参数所指向的结构里去
+
+typedef uint32_t in_addr_t;
+
+           struct in_addr {
+               in_addr_t s_addr;
+           };
+
+
+
+ char *inet_ntoa(struct in_addr in);
+把结构中的IPV4的地址ip地址转成点分十进制字符串返回
+
+思考：1 vfork 和fork区别
+       	
+
+     2 tcp三次握手描述过程
+      
+
+tcp
+
+话机：
+int socket(int domain, int type, int protocol);
+domain:协议族 AF_INET（ipv4）/AF_INET6（ipv6）
+type：套接字类型
+SOCK_STREAM 字节流套接字 用于tcp协议
+SOCK_DGRAM   数据报套接字 用于UDP
+
+protocol：0
+返回：返回一个套接字 失败返回-1
+
+
+绑定：
+int bind(int sockfd, const struct sockaddr *addr,socklen_t addrlen);
+绑定本机信息到文件描述符
+sockfd:socket返回值 套接字
+addr:my_addr
+ 
+
+struct sockaddr {
+               sa_family_t sa_family;
+               char        sa_data[14];
+           }
+
+vim /usr/include/netinet/in.h
+struct sockaddr_in
+  {
+    unsigned short sin_family;   //协议族
+    in_port_t sin_port;         /* Port number.  */
+    struct in_addr sin_addr;        /* Internet address.  */
+   };
+typedef uint32_t in_addr_t;
+
+           struct in_addr {
+               in_addr_t s_addr;
+           };
+
+
+多路：
+int listen(int sockfd, int backlog);
+sockfd:
+backlog:最大连接数
+
+同时允许多少个连接请求等待处理
+
+int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+以阻塞的方式等待连接
+返回值：返回一个跟客户端连接的新套接字 用于传输数据
+
+sockfd：在哪个套接字上等 
+会取得对方套接字信息
+
+write/read.........................
+
+挂断
+close();
+
+
+
+客户端：
+int socket(int domain, int type, int protocol);
+
+拨打：
+int connect(int sockfd, const struct sockaddr *addr,
+                   socklen_t addrlen);
+
+
+write/read
+挂断
+close
+
+作业：
+1、客户端从键盘获取字符串 发送给服务器 服务器收到后 转为大写 发回客户端 
+2、做个回射服务器
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

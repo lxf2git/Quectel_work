@@ -1,0 +1,195 @@
+练习1：建立一个带头的单链表 存储学生信息（姓名和年龄 id）按id从小到大存储
+      要求：
+	功能：1 input（输入学生信息）--按id从小到大
+             2 查找（按年龄查找）并将找到的学生信息输出到屏幕
+	     3 保存
+             4 打印所有学生信息
+             5 退出
+
+练习：约瑟夫环（单循环链表）
+作业：学生管理系统（不可以修改结构体 函数及参数）
+
+双循环：
+建立一个带头的双循环链表 存储n个学生信息（姓名 id）并输出
+要求：按id从小到大
+
+雅虎笔试
+有两个双循环链表A，B 他们的头指针为pHeadA pHeadB 请写一个函数将两个链表中的data值相同的结点删除
+1  6 
+2  9
+
+作业：基数排序
+  
+
+  0     1   2     3    4          5   6   7          8       9
+ 800     111    893  234         045                 108    219 
+ 120 
+ 080
+
+ typedef struct node
+{
+	int data;
+	struct node *prev;
+	struct node *next;
+}sNode,*pNode;
+
+typedef struct dis_chain
+{
+	pNode record;
+
+	struct dis_chain*next;
+}sDisChain,*pDisChain;
+
+
+num = judge_num();
+for(i<num)
+{
+	distribute();
+	collected();	
+}
+
+作业：实现进制转换(10-2 10-16 10-8)
+
+(选做)利用栈操作实现简单计算器
+如：4+2*3-4/2
+
+
+提示：
+1 需要两个栈分别存储操作数和运算符
+2 键盘接收字符串遍历：
+	遇到操作数则操作数入栈 
+	遇到运算符 则判断当前运算符和栈顶运算符的优先级
+	当前运算符优先级>栈顶运算符 入栈
+        当前运算符优先级<栈顶运算符  ...........
+3 有括号时   如：4+2*（3-4*2-1）/2
+  遇到左括号。。。。。
+  遇到右括号。。。。。
+
+
+作业： 递归快排
+      （选做）将快排递归改成非递归（循环+stack 代替递归）  
+        入栈条件（什么时候入栈）
+        出栈条件（什么时候出栈）
+
+作业：内存管理 
+功能：
+  apply：（要有申请的内存的大小  >0）
+  free：（释放第几次申请的）
+  print:（打印当前申请链表和释放链表）
+  exit:
+
+typedef struct  memory
+{
+	int index;
+	unsigned int mem_size;
+	struct memory *prev;
+	struct memory *next;
+}sMem,*pMem;
+
+typedef struct record
+{
+	pMem *pdata;//记录申请下来的结点的地址
+	struct record *prev;
+	struct record *next;
+}
+
+作业：
+hash查找（哈希）
+15  20 12 41 23 74  35
+%5                         15   41  21   20
+
+0   1   2   3   4 
+15  41   12 23  74
+20
+35
+
+1 根据hash函数建立hash表
+  查找的数据先根据hash函数产生hash值 然后去hash表里找
+
+   将原数据进行二次hash 目的解决冲突
+
+data%5
+data>>3&7
+   0 1 2 3 4 5 6 7
+0
+1
+2
+3
+4
+
+struct data
+{
+	int data;
+	struct data *pre;
+	struct data *next;
+};
+
+struct and
+{
+	struct data*and[8];
+};
+
+struct mod
+{
+	struct and*mod[5];
+};
+
+作业：二叉排序数（链表实现）
+  1 creat
+  2 delete
+     a 叶子结点
+     b一个孩子
+     c 两个孩子
+  3 print	
+
+
+作业：先序建立二叉树
+作业：三种遍历的非递归形式（栈）
+
+作业：二叉树层次遍历(队列)
+
+选做：huffman实现压缩和解压缩
+aabbbbcccccccdddddddd
+ adcbbda
+
+struct data_node
+{
+	char data;//当前字符
+	int weight;//权值
+	struct data_node *parent;
+	struct data_node *lc;
+	struct data_node *rc;
+}
+1、权值：
+a:2 b:4 c:7 d:8
+
+2、建huffman树
+
+3、huffman编码
+  左1 右0
+ a:110
+ b:010
+ c:00
+ d：1
+
+
+
+
+adcbaa
+
+110100010110110
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

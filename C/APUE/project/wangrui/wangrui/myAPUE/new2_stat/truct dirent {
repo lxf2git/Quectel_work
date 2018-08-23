@@ -1,0 +1,338 @@
+STAT(2)                    Linux Programmer’s Manual                   STAT(2)
+
+
+
+NNAAMMEE
+       stat, fstat, lstat - get file status
+
+SSYYNNOOPPSSIISS
+       ##iinncclluuddee <<ssyyss//ttyyppeess..hh>>
+       ##iinncclluuddee <<ssyyss//ssttaatt..hh>>
+       ##iinncclluuddee <<uunniissttdd..hh>>
+
+       iinntt ssttaatt((ccoonnsstt cchhaarr **_p_a_t_h,, ssttrruucctt ssttaatt **_b_u_f));;
+       iinntt ffssttaatt((iinntt _f_d,, ssttrruucctt ssttaatt **_b_u_f));;
+       iinntt llssttaatt((ccoonnsstt cchhaarr **_p_a_t_h,, ssttrruucctt ssttaatt **_b_u_f));;
+
+   Feature Test Macro Requirements for glibc (see ffeeaattuurree__tteesstt__mmaaccrrooss(7)):
+
+       llssttaatt(): _BSD_SOURCE || _XOPEN_SOURCE >= 500
+
+DDEESSCCRRIIPPTTIIOONN
+       These  functions  return  information about a file.  No permissions are
+       required on the file itself, but — in the case of ssttaatt() and llssttaatt()  —
+       execute  (search)  permission  is required on all of the directories in
+       _p_a_t_h that lead to the file.
+
+       ssttaatt() stats the file pointed to by _p_a_t_h and fills in _b_u_f.
+
+       llssttaatt() is identical to ssttaatt(), except that if _p_a_t_h is a symbolic link,
+       then the link itself is stat-ed, not the file that it refers to.
+
+       ffssttaatt()  is  identical to ssttaatt(), except that the file to be stat-ed is
+       specified by the file descriptor _f_d.
+
+       All of these system calls return a _s_t_a_t structure, which  contains  the
+       following fields:
+
+           struct stat {
+               dev_t     st_dev;     /* ID of device containing file */
+               ino_t     st_ino;     /* inode number */
+               mode_t    st_mode;    /* protection */
+               nlink_t   st_nlink;   /* number of hard links */
+               uid_t     st_uid;     /* user ID of owner */
+               gid_t     st_gid;     /* group ID of owner */
+               dev_t     st_rdev;    /* device ID (if special file) */
+               off_t     st_size;    /* total size, in bytes */
+               blksize_t st_blksize; /* blocksize for file system I/O */
+               blkcnt_t  st_blocks;  /* number of 512B blocks allocated */
+               time_t    st_atime;   /* time of last access */
+               time_t    st_mtime;   /* time of last modification */
+               time_t    st_ctime;   /* time of last status change */
+           };
+
+       The _s_t___d_e_v field describes the device on which this file resides.  (The
+       mmaajjoorr(3) and mmiinnoorr(3) macros may be useful to decompose the  device  ID
+       in this field.)
+
+       The  _s_t___r_d_e_v  field  describes the device that this file (inode) repre-
+       sents.
+
+       The _s_t___s_i_z_e field gives the size of the file (if it is a  regular  file
+       or  a  symbolic link) in bytes.  The size of a symlink is the length of
+       the pathname it contains, without a trailing null byte.
+
+       The _s_t___b_l_o_c_k_s field indicates the number of  blocks  allocated  to  the
+       file,  512-byte  units.  (This may be smaller than _s_t___s_i_z_e/512 when the
+       file has holes.)
+
+       The _s_t___b_l_k_s_i_z_e field gives the "preferred" blocksize for efficient file
+       system  I/O.  (Writing to a file in smaller chunks may cause an ineffi-
+       cient read-modify-rewrite.)
+
+       Not all of the Linux file systems implement all  of  the  time  fields.
+       Some  file  system  types allow mounting in such a way that file and/or
+       directory accesses do not cause an update of the _s_t___a_t_i_m_e field.   (See
+       _n_o_a_t_i_m_e,  _n_o_d_i_r_a_t_i_m_e, and _r_e_l_a_t_i_m_e in mmoouunntt(8), and related information
+       in mmoouunntt(2).)  In addition, _s_t___a_t_i_m_e is not updated if a file is opened
+       with the OO__NNOOAATTIIMMEE; see ooppeenn(2).
+
+       The  field  _s_t___a_t_i_m_e  is  changed  by  file  accesses,  for example, by
+       eexxeeccvvee(2), mmkknnoodd(2), ppiippee(2), uuttiimmee(2) and rreeaadd(2) (of more  than  zero
+       bytes).   Other routines, like mmmmaapp(2), may or may not update _s_t___a_t_i_m_e.
+
+       The field _s_t___m_t_i_m_e is changed by file modifications,  for  example,  by
+       mmkknnoodd(2), ttrruunnccaattee(2), uuttiimmee(2) and wwrriittee(2) (of more than zero bytes).
+       Moreover, _s_t___m_t_i_m_e of a directory is changed by the creation  or  dele-
+       tion of files in that directory.  The _s_t___m_t_i_m_e field is _n_o_t changed for
+       changes in owner, group, hard link count, or mode.
+
+       The field _s_t___c_t_i_m_e is changed by writing or by setting  inode  informa-
+       tion (i.e., owner, group, link count, mode, etc.).
+
+       The following POSIX macros are defined to check the file type using the
+       _s_t___m_o_d_e field:
+
+           SS__IISSRREEGG(m)  is it a regular file?
+
+           SS__IISSDDIIRR(m)  directory?
+
+           SS__IISSCCHHRR(m)  character device?
+
+           SS__IISSBBLLKK(m)  block device?
+
+           SS__IISSFFIIFFOO(m) FIFO (named pipe)?
+
+           SS__IISSLLNNKK(m)  symbolic link? (Not in POSIX.1-1996.)
+
+           SS__IISSSSOOCCKK(m) socket? (Not in POSIX.1-1996.)
+
+       The following flags are defined for the _s_t___m_o_d_e field:
+
+           SS__IIFFMMTT     0170000   bit mask for the file type bit fields
+           SS__IIFFSSOOCCKK   0140000   socket
+           SS__IIFFLLNNKK    0120000   symbolic link
+           SS__IIFFRREEGG    0100000   regular file
+           SS__IIFFBBLLKK    0060000   block device
+           SS__IIFFDDIIRR    0040000   directory
+           SS__IIFFCCHHRR    0020000   character device
+           SS__IIFFIIFFOO    0010000   FIFO
+           SS__IISSUUIIDD    0004000   set UID bit
+           SS__IISSGGIIDD    0002000   set-group-ID bit (see below)
+           SS__IISSVVTTXX    0001000   sticky bit (see below)
+           SS__IIRRWWXXUU    00700     mask for file owner permissions
+           SS__IIRRUUSSRR    00400     owner has read permission
+           SS__IIWWUUSSRR    00200     owner has write permission
+           SS__IIXXUUSSRR    00100     owner has execute permission
+           SS__IIRRWWXXGG    00070     mask for group permissions
+           SS__IIRRGGRRPP    00040     group has read permission
+           SS__IIWWGGRRPP    00020     group has write permission
+           SS__IIXXGGRRPP    00010     group has execute permission
+           SS__IIRRWWXXOO    00007     mask for permissions for others (not in group)
+           SS__IIRROOTTHH    00004     others have read permission
+           SS__IIWWOOTTHH    00002     others have write permission
+           SS__IIXXOOTTHH    00001     others have execute permission
+
+       The set-group-ID bit (SS__IISSGGIIDD) has several special uses.  For a  direc-
+       tory  it indicates that BSD semantics is to be used for that directory:
+       files created there inherit their group ID from the directory, not from
+       the effective group ID of the creating process, and directories created
+       there will also get the SS__IISSGGIIDD bit set.  For a file that does not have
+       the  group  execution bit (SS__IIXXGGRRPP) set, the set-group-ID bit indicates
+       mandatory file/record locking.
+
+       The sticky bit (SS__IISSVVTTXX) on a directory  means  that  a  file  in  that
+       directory  can  be renamed or deleted only by the owner of the file, by
+       the owner of the directory, and by a privileged process.
+
+RREETTUURRNN VVAALLUUEE
+       On success, zero is returned.  On error, -1 is returned, and  _e_r_r_n_o  is
+       set appropriately.
+
+EERRRROORRSS
+       EEAACCCCEESS Search  permission  is  denied for one of the directories in the
+              path prefix of _p_a_t_h.  (See also ppaatthh__rreessoolluuttiioonn(7).)
+
+       EEBBAADDFF  _f_d is bad.
+
+       EEFFAAUULLTT Bad address.
+
+       EELLOOOOPP  Too many symbolic links encountered while traversing the path.
+
+       EENNAAMMEETTOOOOLLOONNGG
+              File name too long.
+
+       EENNOOEENNTT A component of _p_a_t_h does not exist, or _p_a_t_h is an empty  string.
+
+       EENNOOMMEEMM Out of memory (i.e., kernel memory).
+
+       EENNOOTTDDIIRR
+              A component of the path prefix of _p_a_t_h is not a directory.
+
+       EEOOVVEERRFFLLOOWW
+              (ssttaatt())  _p_a_t_h refers to a file whose size cannot be represented
+              in the type       _o_f_f___t.  This can  occur  when  an  application
+              compiled  on  a  32-bit  platform without _-_D___F_I_L_E___O_F_F_S_E_T___B_I_T_S_=_6_4
+              calls ssttaatt() on a file whose size exceeds _(_2_<_<_3_1_)_-_1 bits.
+
+CCOONNFFOORRMMIINNGG TTOO
+       These system calls conform to SVr4, 4.3BSD, POSIX.1-2001.
+
+       Use of the _s_t___b_l_o_c_k_s and _s_t___b_l_k_s_i_z_e fields may be less portable.  (They
+       were  introduced  in  BSD.  The interpretation differs between systems,
+       and possibly on a single system when NFS mounts are involved.)
+
+       POSIX  does  not  describe  the  SS__IIFFMMTT,  SS__IIFFSSOOCCKK,  SS__IIFFLLNNKK,  SS__IIFFRREEGG,
+       SS__IIFFBBLLKK,  SS__IIFFDDIIRR,  SS__IIFFCCHHRR, SS__IIFFIIFFOO, SS__IISSVVTTXX bits, but instead demands
+       the use of the macros SS__IISSDDIIRR(), etc.   The  SS__IISSLLNNKK()  and  SS__IISSSSOOCCKK()
+       macros  are  not in POSIX.1-1996, but both are present in POSIX.1-2001;
+       the former is from SVID 4, the latter from SUSv2.
+
+       Unix V7 (and later systems) had SS__IIRREEAADD, SS__IIWWRRIITTEE, SS__IIEEXXEECC, where POSIX
+       prescribes the synonyms SS__IIRRUUSSRR, SS__IIWWUUSSRR, SS__IIXXUUSSRR.
+
+   OOtthheerr SSyysstteemmss
+       Values that have been (or are) in use on various systems:
+
+       hex    name       ls   octal    description
+       f000   S_IFMT          170000   mask for file type
+       0000                   000000   SCO out-of-service inode; BSD unknown
+                                       type; SVID-v2 and XPG2 have both
+                                       0 and 0100000 for ordinary file
+       1000   S_IFIFO    p|   010000   FIFO (named pipe)
+       2000   S_IFCHR    c    020000   character special (V7)
+       3000   S_IFMPC         030000   multiplexed character special (V7)
+       4000   S_IFDIR    d/   040000   directory (V7)
+       5000   S_IFNAM         050000   XENIX named special file
+                                       with two subtypes, distinguished by
+                                       _s_t___r_d_e_v values 1, 2
+       0001   S_INSEM    s    000001   XENIX semaphore subtype of IFNAM
+       0002   S_INSHD    m    000002   XENIX shared data subtype of IFNAM
+       6000   S_IFBLK    b    060000   block special (V7)
+       7000   S_IFMPB         070000   multiplexed block special (V7)
+       8000   S_IFREG    -    100000   regular (V7)
+       9000   S_IFCMP         110000   VxFS compressed
+       9000   S_IFNWK    n    110000   network special (HP-UX)
+       a000   S_IFLNK    l@   120000   symbolic link (BSD)
+       b000   S_IFSHAD        130000   Solaris shadow inode for ACL
+                                       (not seen by userspace)
+       c000   S_IFSOCK   s=   140000   socket (BSD; also "S_IFSOC" on VxFS)
+       d000   S_IFDOOR   D>   150000   Solaris door
+       e000   S_IFWHT    w%   160000   BSD whiteout (not used for inode)
+       0200   S_ISVTX         001000   sticky bit: save swapped text even
+                                       after use (V7)
+                                       reserved (SVID-v2)
+                                       On non-directories: don’t cache this
+                                       file (SunOS)
+                                       On directories: restricted deletion
+                                       flag (SVID-v4.2)
+       0400   S_ISGID         002000   set-group-ID on execution (V7)
+                                       for directories: use BSD semantics for
+                                       propagation of GID
+       0400   S_ENFMT         002000   System V file locking enforcement (shared
+                                       with S_ISGID)
+       0800   S_ISUID         004000   set-user-ID on execution (V7)
+       0800   S_CDF           004000   directory is a context dependent
+                                       file (HP-UX)
+
+       A sticky command appeared in Version 32V AT&T UNIX.
+
+NNOOTTEESS
+       Since  kernel 2.5.48, the _s_t_a_t structure supports nanosecond resolution
+       for the three file timestamp fields.  Glibc exposes the nanosecond com-
+       ponent of each field using names either of the form _s_t___a_t_i_m_._t_v___n_s_e_c, if
+       the __BBSSDD__SSOOUURRCCEE or __SSVVIIDD__SSOOUURRCCEE feature test macro is  defined,  or  of
+       the  form _s_t___a_t_i_m_e_n_s_e_c, if neither of these macros is defined.  On file
+       systems that do not support  sub-second  timestamps,  these  nanosecond
+       fields are returned with the value 0.
+
+       On  Linux,  llssttaatt()  will  generally  not  trigger  automounter action,
+       whereas ssttaatt(()) will.
+
+       For most files under the _/_p_r_o_c directory, ssttaatt() does  not  return  the
+       file  size in the _s_t___s_i_z_e field; instead the field is returned with the
+       value 0.
+
+   UUnnddeerrllyyiinngg kkeerrnneell iinntteerrffaaccee
+       Over time, increases in the size of the  _s_t_a_t  structure  have  led  to
+       three  successive  versions  of ssttaatt(): _s_y_s___s_t_a_t() (slot _____N_R___o_l_d_s_t_a_t),
+       _s_y_s___n_e_w_s_t_a_t() (slot _____N_R___s_t_a_t), and _s_y_s___s_t_a_t_6_4_(_) (new  in  kernel  2.4;
+       slot  _____N_R___s_t_a_t_6_4).   The  glibc  ssttaatt()  wrapper  function hides these
+       details from applications, invoking the most recent version of the sys-
+       tem call provided by the kernel, and repacking the returned information
+       if required for old binaries.  Similar remarks apply  for  ffssttaatt()  and
+       llssttaatt().
+
+EEXXAAMMPPLLEE
+       The  following program calls ssttaatt() and displays selected fields in the
+       returned _s_t_a_t structure.
+
+       #include <sys/types.h>
+       #include <sys/stat.h>
+       #include <time.h>
+       #include <stdio.h>
+       #include <stdlib.h>
+
+       int
+       main(int argc, char *argv[])
+       {
+           struct stat sb;
+
+           if (argc != 2) {
+               fprintf(stderr, "Usage: %s <pathname>\n", argv[0]);
+               exit(EXIT_FAILURE);
+           }
+
+           if (stat(argv[1], &sb) == -1) {
+               perror("stat");
+               exit(EXIT_SUCCESS);
+           }
+
+           printf("File type:                ");
+
+           switch (sb.st_mode & S_IFMT) {
+           case S_IFBLK:  printf("block device\n");            break;
+           case S_IFCHR:  printf("character device\n");        break;
+           case S_IFDIR:  printf("directory\n");               break;
+           case S_IFIFO:  printf("FIFO/pipe\n");               break;
+           case S_IFLNK:  printf("symlink\n");                 break;
+           case S_IFREG:  printf("regular file\n");            break;
+           case S_IFSOCK: printf("socket\n");                  break;
+           default:       printf("unknown?\n");                break;
+           }
+
+           printf("I-node number:            %ld\n", (long) sb.st_ino);
+
+           printf("Mode:                     %lo (octal)\n",
+                   (unsigned long) sb.st_mode);
+
+           printf("Link count:               %ld\n", (long) sb.st_nlink);
+           printf("Ownership:                UID=%ld   GID=%ld\n",
+                   (long) sb.st_uid, (long) sb.st_gid);
+
+           printf("Preferred I/O block size: %ld bytes\n",
+                   (long) sb.st_blksize);
+           printf("File size:                %lld bytes\n",
+                   (long long) sb.st_size);
+           printf("Blocks allocated:         %lld\n",
+                   (long long) sb.st_blocks);
+
+           printf("Last status change:       %s", ctime(&sb.st_ctime));
+           printf("Last file access:         %s", ctime(&sb.st_atime));
+           printf("Last file modification:   %s", ctime(&sb.st_mtime));
+
+           exit(EXIT_SUCCESS);
+       }
+
+SSEEEE AALLSSOO
+       aacccceessss(2), cchhmmoodd(2), cchhoowwnn(2), ffssttaattaatt(2), rreeaaddlliinnkk(2), uuttiimmee(2), ccaappaa--
+       bbiilliittiieess(7), ssyymmlliinnkk(7)
+
+CCOOLLOOPPHHOONN
+       This  page  is  part of release 3.22 of the Linux _m_a_n_-_p_a_g_e_s project.  A
+       description of the project, and information about reporting  bugs,  can
+       be found at http://www.kernel.org/doc/man-pages/.
+
+
+
+Linux                             2009-04-21                           STAT(2)

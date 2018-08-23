@@ -1,0 +1,7 @@
+#ifndef _DIVI_H_
+#define _DIVI_H_
+#include<stdio.h>
+
+void divi();
+
+#endif

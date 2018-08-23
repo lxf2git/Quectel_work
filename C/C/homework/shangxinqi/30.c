@@ -1,0 +1,81 @@
+#include<stdio.h>
+#include<string.h>
+int main()
+{
+	int a,b=0,i,j,k,l,x,y,m,n,z,mont;
+	char d,e,f;
+	char str[50]="0", str1[50]="0",str2[200]="0";
+ 	gets(str);
+	gets(str1);
+	m=strlen(str);
+	n=strlen(str1);
+	z=m+n;
+	mont=m;
+	while(m>0)
+	{
+		for(i=1;i<m;i++)
+		{
+			if(str[i]<=str[i-1])
+			{
+			    d=str[i];
+				str[i]=str[i-1];
+				str[i-1]=d;
+			}
+		}
+		m--;
+	}
+	while(n>0)
+	{
+		for(j=1;j<n;j++)
+		{
+			if(str1[j]<=str1[j-1])
+			{
+				e=str1[j];
+				str1[j]=str1[j-1];
+				str1[j-1]=e;
+			}
+		}
+		n--;
+	}
+	for(x=0;x<mont;x++)
+	{
+		str2[x]=str[x];
+	}
+	y=mont;
+    while(y<z)
+	{
+		str2[y]=str1[b];
+		y++;
+		b++;
+	}
+	k=z;
+	while(z>0)
+	{
+		for(a=1;a<z;a++)
+		{
+			if(str2[a]<str2[a-1])
+			{		
+				f=str2[a];	
+				str2[a]=str2[a-1];
+				str2[a-1]=f;
+		    }
+		}		
+		z--;
+	}
+	for(l=1;l<k;l++)
+	{	
+		if(str2[l]==str2[l-1])
+		{
+			str2[l]='\0';
+		}
+	}		
+    for(l=1;l<k;l++)
+	{
+		if(str2[l]!='\0')
+		{
+			printf("%c",str2[l]);
+		}
+
+	}
+	printf("\n");
+}

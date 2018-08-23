@@ -1,0 +1,56 @@
+客户接受端；
+int Recv_函数名(sData_package package,Socks Socks);
+
+样本：
+int Recv_addfriend(sData_package package,Socks Socks)
+{
+		int ch;
+		printf(GRE"%s请求加为好友 备注:（%s）"NONE"\n",package.src_user,
+						package.dorinform.data);
+		
+		sData_package send_friend;
+		bzero(&send_friend,sizeof(send_friend));
+		send_friend.mode = FRIENDRE;
+		sprintf(send_friend.destAddr,"%s",package.sourceAddr);
+		sprintf(send_friend.sourceAddr,"%s", package.destAddr);
+		sprintf(send_friend.dest_user,"%s", package.src_user);
+		sprintf(send_friend.src_user ,"%s",package.dest_user);
+
+		chain_init(&pTemp_reply);	//初始化应答链表
+		pTemp_reply->data = send_friend;
+		chain_insert(pHead_reply,pTemp_reply);
+		return 0;
+}
+客户发送端：
+Thread_Data * send_函数名(int mode,char* destAddr,char* dest_user);
+返回一个 Thread_Data * 的类型
+样本：
+Thread_Data * send_addfriend(int mode,char* destAddr,char* dest_user)
+{
+				my_jmpMenu(2);
+ 		Sendinit[ADDFRIEND] = init_addfriend;
+
+		Thread_Data *pTemp;
+		chain_init(&pTemp);
+		sData_package dataPackage = Sendinit[ADDFRIEND](NULL,destAddr);
+		printf("添加备注\n");
+		read(0,dataPackage.dorinform.data,sizeof(dataPackage.dorinform.data));
+//		scanf("%s",dataPackage.dorinform.data);
+		pTemp->data = dataPackage;
+		pTemp->id = pthread_self();
+		return pTemp;
+		
+}
+
+
+typedef struct data_chain
+{
+		sData_package data;				//等待处理数据
+		pthread_t id;                    //线程id
+		struct data_chain *next;		
+		struct data_chain *prev;
+
+} Thread_Data;
+
+
+

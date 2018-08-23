@@ -1,0 +1,7 @@
+#include"add.h"
+int nu=0;
+int add(int nu)
+{
+	nu=nu+nu;
+	printf("和为%d",nu);
+}

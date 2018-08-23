@@ -1,0 +1,112 @@
+ goto:
+
+
+int setjmp(jmp_buf env);
+void longjmp(jmp_buf env, int val);//
+
+ /etc/passwd
+struct passwd *getpwnam(const char *name);
+struct passwd *getpwuid(uid_t uid);
+
+//打开/etc/passwd
+void setpwent(void);
+
+//获取一条记录
+struct passwd *getpwent(void);
+
+//关闭/etc/passwd
+void endpwent(void);
+struct passwd {
+               char   *pw_name;       /* username */
+               char   *pw_passwd;     /* user password */
+               uid_t   pw_uid;        /* user ID */
+               gid_t   pw_gid;        /* group ID */
+               char   *pw_gecos;      /* real name */
+               char   *pw_dir;        /* home directory */
+               char   *pw_shell;      /* shell program */
+           };
+
+
+
+/etc/shadow
+struct spwd *getspnam(const char *name)
+根据系统用户获取相应信息struct spwd
+
+void setspent(void);
+struct spwd *getspent(void);
+void endspent(void);
+ struct spwd {
+               char *sp_namp;     /* Login name */
+               char *sp_pwdp;     /* Encrypted password */
+               long  sp_lstchg;   /* Date of last change (measured
+                                     in days since 1 Jan 1970) */
+               long  sp_min;      /* Min # of days between changes */
+               long  sp_max;      /* Max # of days between changes */
+               long  sp_warn;     /* # of days before password expires
+                                     to warn user to change it */
+               long  sp_inact;    /* # of days after password expires
+                                     until account is disabled */
+               long  sp_expire;   /* Date when account expires (measured
+                                     in days since 1 Jan 1970) */
+               unsigned long sp_flag;  /* Reserved */
+           };
+
+char *getpass( const char *prompt);
+char *crypt(const char *key, const char *salt);
+Link with -lcrypt
+
+进程：程序运行的载体 是os中分配资源的最小单位 
+线程是cpu调度的最小单位
+
+进程控制块（PCB）
+vim /usr/src/kernels/2.6.32-358.el6.i686/include/linux/sched.h
+
+进程状态：
+ps -aux
+
+R：运行（可执行状态）
+S：可中断等待状态
+s：会话首进程
+<:高优先级
+N：低优先级
+l：多线程
++：当前进程位于前台
+D：守护进程
+Z：僵尸进程
+T：暂停
+
+return功能：返回调用函数
+exit功能：直接结束进程
+
+
+return/exit _exit区别：
+1、exit/return结束时会刷新IO缓冲区 _exit 直接结束 不刷新IO缓冲区
+2、exit/return 执行后 进程注册的退出函数执行 _exit进程注册的退出函数不执行
+
+
+int atexit(void (*function)(void));
+void _exit(int status)
+
+ pid_t fork(void);
+
+pid_t getpid(void);
+获取当前进程pid
+pid_t getppid(void);
+获取当前进程父进程的pid
+
+作业：mycp dir1 dir2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,16 @@
+#include"yue_shu.h"
+int yue_shu(int nu)
+{
+	int geshu=0,yueshu=0;
+	do
+	{
+		yueshu++;
+		if(nu%yueshu==0&&nu!=yueshu&&yueshu!=1)
+		{
+			printf("约数为%d\n",yueshu);
+			geshu++;	
+		}
+	}while(yueshu<=nu);
+	printf("个数为%d\n",geshu);
+	return yueshu;
+}

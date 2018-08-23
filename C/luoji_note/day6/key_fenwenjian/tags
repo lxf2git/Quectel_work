@@ -1,0 +1,29 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+DEN	include/stdio.h	/^		DEN,$/;"	e	enum:__anon3
+EN	include/stdio.h	/^		EN=0,$/;"	e	enum:__anon3
+GET_BIT	include/stdio.h	9;"	d
+GPM4CON	include/stdio.h	7;"	d
+GPM4DAT	include/stdio.h	8;"	d
+GPX3CON	include/stdio.h	4;"	d
+GPX3DAT	include/stdio.h	5;"	d
+K1	include/stdio.h	/^		K1 =2,$/;"	e	enum:__anon1
+K2	include/stdio.h	/^		K2,	$/;"	e	enum:__anon1
+K3	include/stdio.h	/^		K3,$/;"	e	enum:__anon1
+K4	include/stdio.h	/^		K4,$/;"	e	enum:__anon1
+LED1	include/stdio.h	/^		LED1 =0,$/;"	e	enum:__anon2
+LED2	include/stdio.h	/^		LED2,$/;"	e	enum:__anon2
+LED3	include/stdio.h	/^		LED3,$/;"	e	enum:__anon2
+LED4	include/stdio.h	/^		LED4,$/;"	e	enum:__anon2
+Ttext	Makefile	/^	arm-linux-ld  start.o main.o key_test.o led_driver.o -o key_led -Ttext=70003000$/;"	m
+_start	start.s	/^_start:$/;"	l
+delay	main.c	/^void delay(unsigned int ms)$/;"	f
+init_key_led	main.c	/^void init_key_led()$/;"	f
+key_test	key_test.c	/^int key_test(unsigned long state, int bit) $/;"	f
+led_driver	led_driver.c	/^int led_driver(int opt, int led)$/;"	f
+main	main.c	/^int main() $/;"	f
+printf	include/stdio.h	3;"	d

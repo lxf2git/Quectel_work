@@ -1,0 +1,105 @@
+select poll
+
+  int epoll_create(int size);
+size:通知内核最多可以监视多少个文件描述符
+
+
+int   epoll_ctl(int   epfd,   int  op,  int  fd,  struct
+       epoll_event *event);
+epfd：上一个函数返回的文件描述符
+op:
+EPOLL_CTL_ADD 把一个文件描述符添加到句柄
+EPOLL_CTL_MOD 修改已注册的文件描述符
+EPOLL_CTL_DEL 删除 不再监听这个文件描述符
+
+fd：要操作的文件描述符
+event：epoll要监听的事件
+EPOLLIN 读
+EPOLLOUT 写
+EPOLLET 如果监视的一个描述符就绪 epoll会接收到一次通知 接到通知后必须把所有东西读走
+ typedef union epoll_data {
+               void        *ptr;
+               int          fd;
+               __uint32_t   u32;
+               __uint64_t   u64;
+           } epoll_data_t;
+
+           struct epoll_event {
+               __uint32_t   events;      /* Epoll events */
+               epoll_data_t data;        /* User data variable */
+           };
+
+
+
+int epoll_wait(int epfd, struct epoll_event *events,
+                      int maxevents, int timeout);
+检测哪个描述符状态发生改变
+events：实际发生的事件 实际是数组 会把监视的文件描述符活跃的 放到这个数组里
+maxevents：最多可以从文件描述符中 带回多少个活跃的文件描述符
+timeout:-1 不超时 一直等
+
+返回值：真正活跃的描述符个数
+
+
+ The struct epoll_event is defined as :
+
+           typedef union epoll_data {
+               void    *ptr;
+               int      fd;
+               uint32_t u32;
+               uint64_t u64;
+           } epoll_data_t;
+
+           struct epoll_event {
+               uint32_t     events;    /* Epoll events */
+               epoll_data_t data;      /* User data variable */
+           };
+
+
+vfok fork区别
+vfork：先执行子进程
+    内存：共享
+
+线程：轻量及进程CPU调度的最小单位 由进程创建 共享内存
+进程：资源分配的最小单位
+
+主线程：main开始运行的线程
+创建线程的进程结束 未结束的线程随之消亡
+
+int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
+                          void *(*start_routine) (void *), void *arg);
+创建线程
+thread：线程ID
+参数：NULL
+参数3：线程处理函数
+参数4：传递给线程函数的值
+返回值：成功0 失败非0
+
+  int pthread_join(pthread_t thread, void **retval);
+等待线程结束
+
+  void pthread_exit(void *retval);
+终止本线程
+int pthread_cancel(pthread_t thread)
+请求终止别的线程
+
+ int pthread_setcancelstate(int state, int *oldstate);
+
+stata： 
+PTHREAD_CANCEL_ENABLE
+PTHREAD_CANCEL_DISABLE
+
+//写个小程序 定义一个int数组 10个元素 辅助线程每秒往数组里存放一个整数(100开始 依次递增 顺序存放到数组)
+主线程每秒从数组中取一个元素显示
+   
+  
+
+
+
+
+
+
+
+
+
+

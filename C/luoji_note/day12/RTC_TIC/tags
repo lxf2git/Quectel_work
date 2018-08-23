@@ -1,0 +1,64 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ALMHOUR	include/irq_alarm.h	30;"	d
+ALMMIN	include/irq_alarm.h	31;"	d
+ALMSEC	include/irq_alarm.h	32;"	d
+BASE_ADDR	include/set_rtc.h	5;"	d
+BCDDAY	include/set_rtc.h	8;"	d
+BCDDAYWEEK	include/set_rtc.h	9;"	d
+BCDHOUR	include/set_rtc.h	10;"	d
+BCDMIN	include/set_rtc.h	11;"	d
+BCDMON	include/set_rtc.h	7;"	d
+BCDSEC	include/set_rtc.h	12;"	d
+BCDYEAR	include/set_rtc.h	6;"	d
+COMMON_H	include/common.h	4;"	d
+ICCEOIR_CPU0	include/irq_alarm.h	10;"	d
+ICCIAR_CPU0	include/irq_alarm.h	9;"	d
+ICCICR_CPU0	include/irq_alarm.h	6;"	d
+ICCPMR_CPU0	include/irq_alarm.h	7;"	d
+ICDDCR	include/irq_alarm.h	8;"	d
+ICDIPR19	include/irq_alarm.h	18;"	d
+ICDIPTR19	include/irq_alarm.h	19;"	d
+ICDISER2	include/irq_alarm.h	17;"	d
+INTP	include/irq_alarm.h	25;"	d
+IRQ_ALARM_H	include/irq_alarm.h	2;"	d
+IRQ_BASE	include/irq_alarm.h	5;"	d
+RTCALM	include/irq_alarm.h	26;"	d
+RTCCON	include/set_rtc.h	15;"	d
+RTC_BASE	include/irq_alarm.h	24;"	d
+RTC_H	include/set_rtc.h	2;"	d
+Ttext	Makefile	/^	arm-linux-ld  -Ttext=70003000 start.o main.o alarm.o   -o rtc$/;"	m
+_do_irq	start.s	/^_do_irq:$/;"	l
+_end	start.s	/^_end:$/;"	l
+_start	start.s	/^_start:$/;"	l
+alarm_enable	alarm.c	/^void alarm_enable()$/;"	f
+alarm_set	alarm.c	/^void alarm_set(const struct time_st* pt)$/;"	f
+day	include/common.h	/^		int day;$/;"	m	struct:time_st
+delay	main.c	/^void delay(int ms)$/;"	f
+do_alarm	main.c	/^void do_alarm()$/;"	f
+do_irq	main.c	/^void do_irq(void)$/;"	f
+get_time	main.c	/^void get_time(struct time_st* pt)$/;"	f
+hour	include/common.h	/^		int hour;$/;"	m	struct:time_st
+irq	start.s	/^irq:$/;"	l
+irq_alarm	alarm.c	/^void  irq_alarm(const struct time_st* pt)$/;"	f
+irq_processor	main.c	/^void irq_processor()$/;"	f
+main	main.c	/^int main() $/;"	f
+mem_init	main.c	/^void mem_init(unsigned long* ttb)$/;"	f
+memcpy	main.c	/^void memcpy(char *dest, const char *src, int n)$/;"	f
+min	include/common.h	/^		int min;$/;"	m	struct:time_st
+mmap	main.c	/^void mmap(unsigned long* ttb, unsigned long va,unsigned long pa)$/;"	f
+mmu_enable	main.c	/^void mmu_enable(void)$/;"	f
+mmu_init	main.c	/^void mmu_init()$/;"	f
+mmu_map	main.c	/^void mmu_map()$/;"	f
+month	include/common.h	/^		int month;$/;"	m	struct:time_st
+printf	include/common.h	5;"	d
+sec	include/common.h	/^		int sec;$/;"	m	struct:time_st
+set_time	main.c	/^void set_time(const struct time_st* pt)$/;"	f
+start	start.s	/^start:$/;"	l
+time_st	include/common.h	/^struct time_st$/;"	s
+week	include/common.h	/^		int week;   $/;"	m	struct:time_st
+year	include/common.h	/^		int year;$/;"	m	struct:time_st

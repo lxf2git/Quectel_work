@@ -1,0 +1,21 @@
+作业：内存管理 
+功能：
+  apply：（要有申请的内存的大小  >0）
+  free：（释放第几次申请的）
+  print:（打印当前申请链表和释放链表）
+  exit:
+
+typedef struct  memory
+{
+	int index;
+	unsigned int mem_size;
+	struct memory *prev;
+	struct memory *next;
+}sMem,*pMem;
+
+typedef struct record
+{
+	pMem *pdata;//记录申请下来的结点的地址
+	struct record *prev;
+	struct record *next;
+}sRec,*pRec;

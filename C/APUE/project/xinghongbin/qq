@@ -1,0 +1,36 @@
+struct UserInformation
+{
+        char userId[10];
+        char passwd[10];
+        char vip;
+        long balance;
+};
+union dataOrinformation
+{
+        char data[200];
+        struct UserInformation loginInformation;
+}
+
+
+
+typedef struct 
+{
+        int  mode;         //数据类型
+        char destAddr[20]; //目的地址
+        char sourceAddr[20];//源地址
+        union dataOrinformation dorinform
+
+
+}sData_package;
+
+enum
+{
+        LOGIN,      //登入
+        REGISTER,   //注册
+        ADDFRIEND,  //添加好友
+        FILE_REQUES,//文件请求
+        TELL_REQUES,//谈话请求
+        REQUES_EXIT,//请求结束
+        END         //最后一个
+};
+

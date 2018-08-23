@@ -1,0 +1,78 @@
+项目名称：
+	FTP (File Transfer Protocol)文件传输协议。
+项目功能：
+	实现客户端远程访问服务器，下载、上传或查看服务器上的内容。
+
+思   路：
+	1.客户端首先必须先以服务器用户进行登录，服务器获取客户端信息；
+	2.服务器创建子进程为本次申请服务的客户端服务，将服务器信息存于链表中，
+	3.子进程进行验证登录密码，密码错误直接删除记录信息；
+	4.如果客户端密码验证正确，当服务器再次发送命令的时候，服务器不再验证密码，直接执行客户端的明星；
+	5.当客户端发出quit命令时，子进程给客户端发送退出成功，服务器删除此次登录信息。
+分   工：
+	邢宏彬：
+		负责客户端程序的编写，需要与服务器及服务器子进程协同工作，规定好端口号（为服务器发信息：7563， 
+接收服务器信息：8888）；
+
+//	黄岗桂：
+		编写服务器主函数，当新的客户端申请访问时，检测此服务器是否已经登录成功，如果没有登录，创建子程序， 由子程序进行验证密码正确，密码错误则在链表中删除此节点（通过父进程删除），结束子程序，密码如果密码正确：则此子函数一直为此客户端进行服务，直至服务结束，删除节点信息，客户端退出。
+	
+	樊  迪：
+		编写子程序处理函数（接口：int deal_child_process(struct info judge， int fd);）,当需要验证密码时，验证密码，密码正确向客户端发送命令并返回 0，错误和客户端申请退出的时候返回-1，父进程，删除链表信息。(数据可能很大，需要循环发送，循环接收)；
+	朱丽丽：
+		编写命令处理函数（接口：int deal_apply(char *cmd, char *content);）对命令字符串进行处理，将处理结果存于 字符串content中，由其主调函数发给客户端。
+
+结构体：
+#define DATA 1024;
+/* struct info
+{
+	char user[DATA];
+	char passwd[DATA];
+	char addr[DATA];
+	char cmd[DATA];
+	char data[DATA];
+	int mode;
+};  */
+
+union userOrCmd
+{
+	char user[DATA];
+	char cmd[DATA];
+};
+
+union passwdOrData
+{
+	char passwd[DATA];
+	char data[DATA];
+};
+
+struct info
+{
+	char mode;    /*  0  请求认证  1 执行命令  */
+
+	union userOrCmd uoc;
+	union passwdOrData pod;
+}
+
+
+struct Goin
+{
+	char user[DATA];
+	char addr[DATA];
+	struct login_node*next;
+	struct login_node*prev;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,15 @@
+\
+192.168.1.53
+a.out
+a.txt
+client_pess.c
+deal_child_process.c
+deal_child_process.c~
+deal_pess.c
+deal_pess.c~
+file2
+service2.c
+service.h
+service.h~
+yahu.c
+^

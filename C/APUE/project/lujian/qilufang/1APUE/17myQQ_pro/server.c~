@@ -1,0 +1,60 @@
+#include"apue.h"
+int main()
+{
+	struct sockaddr_in selfaddr,conaddr;
+	int sockfd = socket(AF_INET,SOCK_STREAM,0);
+	if(sockfd<0)
+	{
+		show_err("socket");
+	}
+
+	bzero(&selfaddr,sizeof(selfaddr));
+	selfaddr.sin_family = AF_INET;
+	selfaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	selfaddr.sin_port = htons(8888);
+	int ret = bind(sockfd,(struct sockaddr *)&selfaddr,sizeof(selfaddr));
+	if(ret<0)
+	{
+		show_err("bind");
+	}
+
+	listen(sockfd,10);
+
+	bzero(&conaddr,sizeof(conaddr));
+	int len = sizeof(conaddr);
+	int confd = accept(sockfd,(struct sockaddr *)&conaddr,&len);
+
+	char buf[50];
+	if(fork()==0)
+	{
+		for(;;)
+		{
+			bzero(buf,sizeof(buf));
+			if(read(confd,buf,sizeof(buf))<0)
+			{
+				break;
+			}
+			strcat(buf,"  --client");
+			puts(buf);
+		}
+		exit(0);
+		close(confd);
+	}
+	else
+	{
+			while(1)
+			{
+					printf("Input a str:\n");
+					bzero(buf,sizeof(buf));
+					scanf("%[^\n]",buf);
+					getchar();
+					if(write(confd,buf,strlen(buf)+1)<0)
+					{
+						break;
+					}
+			}
+			close(confd);
+	}
+	return 0;
+
+}

@@ -1,0 +1,76 @@
+文件操作+进程
+进程间通信 
+线程
+socket
+
+fopen
+fread
+fwrite
+fclose
+fgets
+fputs
+fgetc
+fputc
+fseek
+ftell
+rewind
+feof
+
+cat file
+./exe root/1.c
+
+#define _FILE_OFFSET_BITS 64
+int fseeko(FILE *stream, off_t offset, int whence);
+gcc 2_fseek.c -D _FILE_OFFSET_BITS=64
+
+
+#define _GNU_SOURCE
+ #include <stdio.h>
+
+ ssize_t getline(char **lineptr, size_t *n, FILE *stream);
+
+len:行字符数不足120 开辟120
+    >=120 开240
+    》=240  开480
+   >=480 实际  字符+\n+\0
+
+
+void perror(const char *s);
+
+
+ int fflush(FILE *stream);
+刷新缓冲区
+
+高级I/O
+
+int open(const char *pathname, int flags);
+int open(const char *pathname, int flags, mode_t mode);
+功能：打开文件
+参数1：打开文件的路径
+参数2：打开文件的属性
+参数3：
+O_CREAT|O_EXCL 如果文件不存在 创建文件 文件已经存在 则返回错误
+vim /usr/include/bits/fcntl.h
+
+
+ssize_t read(int fd, void *buf, size_t count);
+ssize_t write(int fd, const void *buf, size_t count);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,97 @@
+#include"apply.h"
+#define APPLY 10
+
+
+void apply_max(pmanage apply_head,pmanage *palit_max)
+{
+		int mem_size_sum=0;
+		int mem_size_max=0;
+		pmanage palit=apply_head->next;
+		while(palit!=apply_head)
+		{
+				if(mem_size_max < palit->mem_size)
+				{
+						mem_size_max=mem_size;
+						(*palit_max)=palit;
+				}
+				mem_size__sum+=palit->index;
+				palit=palit->next;
+		}
+		apply_head->mem_size=mem_size_sum;
+}
+
+void select(int space,pmanage apply_head,pmanage myfree_head,
+				pmanage *palit_max)
+{
+		int i=0;
+		pmanage palit;
+		pRecord precord_new;
+		pre_memory(precord_new);
+		if(space<=apply_head->mem_size)
+		{
+				while(space!=0)
+				{
+						if(space<(*palit_max)->mem_size)
+						{
+								for(palit=apply_head->next;palit!=
+											apply_head;palit=palit->next)
+								{
+										if(space==palit->mem_size)
+										{
+											palit->prev->next=palit->next;
+											palit->next->prev=palit->prev;
+											palit->prev=palit;
+											palit->next=palit;
+													stack(myfree_head,palit);
+													precord_new->pdata[i]=palit;
+													i++;
+													space=0;
+										}
+								}
+								if(space!=0);
+								{
+										great_memory(&palit);
+										palit->index=(*palit_max)->index;
+										palit->mem_size=space;
+										((*palit_max)->mem_size)-=space;
+										stack(myfree_head,palit);
+
+										precord_new->pdata[i]=palit;
+										i++;
+
+										space=0;
+								}
+						}
+						else
+						{
+								(*palit_max)->prev->next=(*palit_max)->next;
+								(*palit_max)->next->prev=(*palit_max)->prev;
+								(*palit_max)->prev=(*palit_max);
+								(*palit_max)->next=(*palit_max);
+								strack(myfree_head,(*palit_max));
+								space=space-space;
+
+								precord_new->pdata[i]=palit_max;
+								i++;
+								apply_max(apply_head,palit_max);
+
+						}
+				}
+		}
+		else
+		{
+				printf("kong jian bu gou\n");
+		}
+
+}
+
+void apply(pmanage apply_head,pmanage myfree_head)
+{
+		int space;
+		pmanage palit_max=NULL;
+		apply_max(apply_head,&palit_max);
+
+		printf("please scan space\n");
+		scanf("%d",&space);
+		select(space,apply_head,myfree_head,&palit_max);
+}
